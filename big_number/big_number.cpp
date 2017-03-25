@@ -660,9 +660,9 @@ big_number &big_number::Kar(const big_number &v)
 
     C = (u1 + u0)*(v1 + v0);
 
-    A <<= sizeof(Base)/2;
-
     C = C - A - B;
+
+    A <<= sizeof(Base)/2;
 
     C <<= sizeof(Base)/4;
 
