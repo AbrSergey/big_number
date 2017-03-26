@@ -18,7 +18,7 @@ void test_pow();
 
 int main(){
 
-    big_number a(2, FillTypeRandom), b(2, FillTypeRandom), c(4);
+    big_number a(3, FillTypeRandom), b(3, FillTypeRandom), c(8);
 
     c = a.Kar(b);
 

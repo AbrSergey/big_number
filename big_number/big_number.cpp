@@ -1,6 +1,7 @@
 ﻿#include "big_number.h"
 #include <stdio.h>
 #include <iostream>
+#include <cstdlib>
 #include <string>
 #include <cstring>
 #include "assert.h"
@@ -609,47 +610,38 @@ big_number &big_number::pow(const big_number &y, const big_number &mod)
 
 big_number &big_number::Kar(const big_number &v)
 {
-    int lu = m_len/2;
-
-    int lv = v.m_len/2;
+    //Do the younger numbers have to be the same?
 
     int l;
 
-    if (lu > lv) l = lu;
-    else l = lv;
+    if ((m_len - m_len/2) > (v.m_len - v.m_len/2)) l = v.m_len - v.m_len/2;
 
-    big_number u1(m_len - l), v1(v.m_len - l), u0(l), v0(l);
+    else l = m_len - m_len/2;
+
+    big_number u0(l), v0(l), u1(m_len - l), v1(v.m_len - l);
 
     for (int i = 0; i < l; i++){
 
         u0.m_data[i] = m_data[i];
-
-//        u0.m_capacity++;
-//        u0.m_len++;
-    }
-
-    for (int i = l; i < m_len; i++){
-
-        u1.m_data[0] = m_data[i];
-
-//        u1.m_capacity++;
-//        u1.m_len++;
+        u0.m_capacity = u0.m_len = l;
     }
 
     for (int i = 0; i < l; i++){
 
-        v0.m_data[0] = v.m_data[i];
-
-//        v0.m_capacity++;
-//        v0.m_len++;
+        v0.m_data[i] = v.m_data[i];
+        v0.m_capacity = v0.m_len = l;
     }
 
-    for (int i = l; i < v.m_len; i++){
+    for (int i = 0; i < m_len - l; i++){
 
-        v1.m_data[0] = v.m_data[i];
+        u1.m_data[i] = m_data[i+l];
+        u1.m_capacity = u1.m_len = m_len - l;
+    }
 
-//        v1.m_capacity++;
-//        v1.m_len++;
+    for (int i = 0; i < v.m_len - l; i++){
+
+        v1.m_data[i] = v.m_data[i+l];
+        v1.m_capacity = v1.m_len = v.m_len - l;
     }
 
     big_number A, B, C;
@@ -662,9 +654,10 @@ big_number &big_number::Kar(const big_number &v)
 
     C = C - A - B;
 
-    A <<= sizeof(Base)/2;
+    A <<= l;
 
-    C <<= sizeof(Base)/4;
+    //How much to shift?
+    C <<= l;
 
     big_number rezult = A + C + B;
 
