@@ -4,6 +4,7 @@
 #include "big_number.h"
 #include <fstream>
 #include <sstream>
+#include <ctime>
 
 
 typedef unsigned int Base;
@@ -15,25 +16,59 @@ typedef unsigned long long DoubleBase;
 using namespace std;
 
 void test_pow();
+void test_Kar_1();
+void test_Kar_2();
 
 int main(){
 
-    big_number a(3, FillTypeRandom), b(3, FillTypeRandom), c(8);
+    big_number a(3, FillTypeRandom), b(4, FillTypeRandom), c(8);
 
-    c = a.Kar(b);
-
-    if (a*b == c){
-        cout << "Ok";
-    }
-    else{
-
-        a.printHex();
-        b.printHex();
-        (a*b).printHex();
-        c.printHex();
-    }
+    test_Kar_1();
 
     return 0;
+}
+
+void test_Kar_1(){
+
+    int T = 1000, M = 1000, m, n;
+
+    for (int i = 0; i < 10; i++){
+
+        m = 1 + rand()%M;
+        n = 1 + rand()%M;
+        //m = 1; n = 100;
+        big_number A(m, FillTypeRandom);
+        big_number B(n, FillTypeRandom);
+
+        if (A.Kar(B) == A*B) std::cout << "True";
+
+        else std::cout << "False";
+    }
+}
+
+void test_Kar_2(){
+
+    int T = 500, M = 1000, m, n;
+
+    m = 1 + rand()%M;
+    n = 1 + rand()%M;
+
+    big_number A(M, FillTypeRandom);
+    big_number B(M, FillTypeRandom);
+    big_number C;
+
+    time_t t1 = time(NULL);
+    for (int i = 0; i < T; i++) A.Kar(B);
+    time_t t2 = time(NULL);
+
+    std::cout << "Kar = " << t2-t1 << std::endl;
+
+    t1 = time(NULL), t2;
+    for (int i = 0; i < T; i++) A*B;
+    t2 = time(NULL);
+
+    std::cout << "* = " << t2-t1 << std::endl;
+
 }
 
 void test_pow(){
