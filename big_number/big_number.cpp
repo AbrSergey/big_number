@@ -608,34 +608,75 @@ big_number &big_number::pow(const big_number &y, const big_number &mod)
     return z;
 }
 
-big_number &big_number::Kar(const big_number &v) const
+big_number big_number::Kar(const big_number &v) const
 {
-    if ((this->m_len  < KAR_BASES) || (v.m_len < KAR_BASES)){
+    if ((this->m_len <= KAR_BASES) || (v.m_len <= KAR_BASES)){
 
-//        big_number A;
-//        A = (*this) * v;
-//        return A;
-//    }
+        big_number A;
+        A = (*this) * v;
+        return A;
+    }
 
-    int l;
+    int l, k;
 
-    if ((m_len - m_len/2) > (v.m_len - v.m_len/2)) l = v.m_len - v.m_len/2;
+    if ((m_len - m_len/2) > (v.m_len - v.m_len/2)){
+        l = m_len - m_len/2;
+        k = m_len - l;
+    }
 
-    else l = m_len - m_len/2;
-
+    else{
+        l = v.m_len - v.m_len/2;
+        k = v.m_len - l;
+    }
     big_number u0(l), v0(l), u1(m_len - l), v1(v.m_len - l);
 
     u0.m_capacity = u0.m_len = l;
-    for (int i = 0; i < l; i++) u0.m_data[i] = m_data[i];
+    for (int i = 0; i < l; i++)
+        if(m_len > i) u0.m_data[i] = m_data[i];
+        else u0.m_data[i] = 0;
 
     v0.m_capacity = v0.m_len = l;
-    for (int i = 0; i < l; i++) v0.m_data[i] = v.m_data[i];
+    for (int i = 0; i < l; i++)
+        if(m_len > i) v0.m_data[i] = v.m_data[i];
+        else v0.m_data[i] = 0;
 
-    u1.m_capacity = u1.m_len = m_len - l;
-    for (int i = 0; i < m_len - l; i++) u1.m_data[i] = m_data[i+l];
+    u1.m_capacity = u1.m_len = k;
+    for (int i = 0; i < m_len - l; i++)
+        if(m_len > i+l) u1.m_data[i] = m_data[i+l];
+        else u1.m_data[i] = 0;
 
-    v1.m_capacity = v1.m_len = v.m_len - l;
-    for (int i = 0; i < v.m_len - l; i++) v1.m_data[i] = v.m_data[i+l];
+    v1.m_capacity = v1.m_len = k;
+    for (int i = 0; i < v.m_len - l; i++)
+        if(v.m_len > i+l) v1.m_data[i] = v.m_data[i+l];
+        else v1.m_data[i] = 0;
+
+    u1.checkLength();
+    if (u1.m_len == 0){
+
+        u1.m_len++;
+        u1.m_data[0] = 0;
+    }
+
+    v1.checkLength();
+    if (v1.m_len == 0){
+
+        v1.m_len++;
+        v1.m_data[0] = 0;
+    }
+
+    u0.checkLength();
+    if (u0.m_len == 0){
+
+        u0.m_len++;
+        u0.m_data[0] = 0;
+    }
+
+    v0.checkLength();
+    if (v0.m_len == 0){
+
+        v0.m_len++;
+        v0.m_data[0] = 0;
+    }
 
     big_number A, B, C;
 

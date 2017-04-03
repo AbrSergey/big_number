@@ -21,7 +21,7 @@ void test_Kar_2();
 
 int main(){
 
-    big_number a(3, FillTypeRandom), b(4, FillTypeRandom), c(8);
+   // big_number a(2, FillTypeRandom), b(2, FillTypeRandom), c(8);
 
     test_Kar_1();
 
@@ -34,15 +34,17 @@ void test_Kar_1(){
 
     for (int i = 0; i < 10; i++){
 
-        m = 1 + rand()%M;
-        n = 1 + rand()%M;
+        m = 2 + rand()%M;
+        n = 2 + rand()%M;
         //m = 1; n = 100;
-        big_number A(m, FillTypeRandom);
-        big_number B(n, FillTypeRandom);
+        big_number A(2, FillTypeRandom);
+        big_number B(5, FillTypeRandom);
 
         if (A.Kar(B) == A*B) std::cout << "True";
 
         else std::cout << "False";
+
+        std::cout << endl;
     }
 }
 

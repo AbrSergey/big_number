@@ -4,7 +4,7 @@
 #include <exception>
 #include <stdexcept>
 
-#define KAR_BASES 50
+#define KAR_BASES 1
 
 typedef unsigned int Base;
 
@@ -73,7 +73,7 @@ public:
 
     big_number& pow (const big_number & y, const big_number & mod );
 
-    big_number& Kar (const big_number & v) const;
+    big_number Kar (const big_number & v) const;
 
    // bool operator == ( Base & input_number ) const;
 
