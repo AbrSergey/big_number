@@ -39,8 +39,12 @@ void test_Kar_1(){
         //m = 1; n = 100;
         big_number A(2, FillTypeRandom);
         big_number B(5, FillTypeRandom);
+        big_number C(8), D(8);
 
-        if (A.Kar(B) == A*B) std::cout << "True";
+        C = A.Kar(B);
+        D = A*B;
+
+        if (C == D) std::cout << "True";
 
         else std::cout << "False";
 

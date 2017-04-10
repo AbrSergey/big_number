@@ -628,7 +628,34 @@ big_number big_number::Kar(const big_number &v) const
         l = v.m_len - v.m_len/2;
         k = v.m_len - l;
     }
-    big_number u0(l), v0(l), u1(m_len - l), v1(v.m_len - l);
+    big_number u0(l), v0(l), u1, v1;
+
+    if (m_len - l <= 0) {
+        u1.m_capacity = u1.m_len = 1;
+        u1.m_data = new Base[u1.m_capacity];
+        u1.m_data[0] = 0;
+    }
+    else{
+        u1.m_capacity = u1.m_len = k;
+        u1.m_data = new Base[u1.m_capacity];
+        for (int i = 0; i < m_len - l; i++)
+            if(m_len > i+l) u1.m_data[i] = m_data[i+l];
+            else u1.m_data[i] = 0;
+    }
+
+    if (v.m_len - l <= 0){
+        v1.m_capacity = v1.m_len = 1;
+        v1.m_data = new Base[v1.m_capacity];
+        v1.m_data[0] = 0;
+    }
+    else{
+        v1.m_capacity = v1.m_len = k;
+        v1.m_data = new Base[v1.m_capacity];
+        for (int i = 0; i < v.m_len - l; i++)
+            if(v.m_len > i+l) v1.m_data[i] = v.m_data[i+l];
+            else v1.m_data[i] = 0;
+    }
+
 
     u0.m_capacity = u0.m_len = l;
     for (int i = 0; i < l; i++)
@@ -639,16 +666,6 @@ big_number big_number::Kar(const big_number &v) const
     for (int i = 0; i < l; i++)
         if(m_len > i) v0.m_data[i] = v.m_data[i];
         else v0.m_data[i] = 0;
-
-    u1.m_capacity = u1.m_len = k;
-    for (int i = 0; i < m_len - l; i++)
-        if(m_len > i+l) u1.m_data[i] = m_data[i+l];
-        else u1.m_data[i] = 0;
-
-    v1.m_capacity = v1.m_len = k;
-    for (int i = 0; i < v.m_len - l; i++)
-        if(v.m_len > i+l) v1.m_data[i] = v.m_data[i+l];
-        else v1.m_data[i] = 0;
 
     u1.checkLength();
     if (u1.m_len == 0){
@@ -685,6 +702,12 @@ big_number big_number::Kar(const big_number &v) const
     B = u0.Kar(v0);
 
     C = (u1 + u0).Kar(v1 + v0);
+
+    big_number Z(10);
+
+    Z = C - A;
+
+    Z = C - A - B;
 
     C = C - A - B;
 
