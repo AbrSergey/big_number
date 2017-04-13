@@ -38,9 +38,9 @@ void test_Kar_1(){
         m = 2 + rand()%M;
         n = 2 + rand()%M;
         //m = 1; n = 100;
-        big_number A(2000, FillTypeRandom);
-        big_number B(500, FillTypeRandom);
-        big_number C(8), D(8);
+        big_number A(100, FillTypeRandom);
+        big_number B(200, FillTypeRandom);
+        big_number C(8000), D(8000);
 
 //        A.printDbg();
 //        B.printDbg();
