@@ -664,7 +664,7 @@ big_number big_number::Kar(const big_number &v) const
 
     v0.m_capacity = v0.m_len = l;
     for (int i = 0; i < l; i++)
-        if(m_len > i) v0.m_data[i] = v.m_data[i];
+        if(v.m_len > i) v0.m_data[i] = v.m_data[i];
         else v0.m_data[i] = 0;
 
     u1.checkLength();
