@@ -4,7 +4,7 @@
 #include <exception>
 #include <stdexcept>
 
-#define KAR_BASES 1
+#define KAR_BASES 100
 
 typedef unsigned int Base;
 

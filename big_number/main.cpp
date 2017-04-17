@@ -24,26 +24,23 @@ int main(){
 
    // big_number a(2, FillTypeRandom), b(2, FillTypeRandom), c(8);
 
-    test_Kar_1();
+    test_Kar_2();
 
     return 0;
 }
 
 void test_Kar_1(){
 
-    int T = 1000, M = 1000, m, n;
+    int T = 100, M = 1000, m, n;
 
-    for (int i = 0; i < 10; i++){
+    for (int i = 0; i < T; i++){
 
-        m = 2 + rand()%M;
-        n = 2 + rand()%M;
-        //m = 1; n = 100;
-        big_number A(100, FillTypeRandom);
-        big_number B(200, FillTypeRandom);
-        big_number C(8000), D(8000);
+        m = 1 + rand()%M;
+        n = 1 + rand()%M;
 
-//        A.printDbg();
-//        B.printDbg();
+        big_number A(m, FillTypeRandom);
+        big_number B(n, FillTypeRandom);
+        big_number C, D;
 
         C = A.Kar(B);
         D = A*B;
@@ -58,10 +55,7 @@ void test_Kar_1(){
 
 void test_Kar_2(){
 
-    int T = 500, M = 1000, m, n;
-
-    m = 1 + rand()%M;
-    n = 1 + rand()%M;
+    int T = 50, M = 1000, m, n;
 
     big_number A(M, FillTypeRandom);
     big_number B(M, FillTypeRandom);

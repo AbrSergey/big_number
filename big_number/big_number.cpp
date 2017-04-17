@@ -622,7 +622,7 @@ big_number big_number::Kar(const big_number &v) const
 {
     //
 
-    int l = min(m_len, v.m_len);
+    int l = min(m_len, v.m_len), i;
 
     if (l <= KAR_BASES){
 
@@ -631,15 +631,17 @@ big_number big_number::Kar(const big_number &v) const
         return A;
     }
 
-    l = max(m_len, v.m_len);
+    int baseNum = max(m_len, v.m_len);
 
-    l >>= 1;
+    baseNum >>= 1;
 
-    int u_size, v_size;
+    baseNum = max(m_len, v.m_len) - baseNum;
 
-    if (l > m_len)  u_size = m_len;
+    int u_size = baseNum, v_size = baseNum;
 
-    if (l > v.m_len) v_size = v.m_len;
+    if (baseNum > m_len)  u_size = m_len;
+
+    if (baseNum > v.m_len) v_size = v.m_len;
 
     big_number u0(u_size), v0(v_size);
 
@@ -647,13 +649,15 @@ big_number big_number::Kar(const big_number &v) const
     for (l = 0; l < u_size; l++) u0.m_data[l] = m_data[l];
 
     big_number u1(m_len - l);
-    for (int i = l; l < m_len; l++) u1.m_data[l - i] = m_data[l];
+    for (i = l; l < m_len; l++) u1.m_data[l - i] = m_data[l];
+    u1.m_len = l - i;
 
     v0.m_len = v_size;
     for (l = 0; l < v_size; l++) v0.m_data[l] = v.m_data[l];
 
     big_number v1(v.m_len - l);
-    for (int i = 0; l < v.m_len; l++) v1.m_data[l - i] = m_data[l];
+    for (i = l; l < v.m_len; l++) v1.m_data[l - i] = v.m_data[l];
+    v1.m_len = l - i;
 
     big_number A, B, C;
 
@@ -665,9 +669,9 @@ big_number big_number::Kar(const big_number &v) const
 
     C = C - A - B;
 
-    A <<= 2*l;
+    A <<= 2*baseNum;
 
-    C <<= l;
+    C <<= baseNum;
 
     big_number rezult = A + C + B;
 
