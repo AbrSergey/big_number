@@ -31,7 +31,7 @@ int main(){
 
 void test_Kar_1(){
 
-    int T = 100, M = 1000, m, n;
+    int T = 50, M = 1000, m, n;
 
     for (int i = 0; i < T; i++){
 
@@ -55,23 +55,24 @@ void test_Kar_1(){
 
 void test_Kar_2(){
 
-    int T = 50, M = 1000, m, n;
+    int T = 50, M = 1500;
 
     big_number A(M, FillTypeRandom);
     big_number B(M, FillTypeRandom);
     big_number C;
 
-    time_t t1 = time(NULL);
+    clock_t start;
+    double duration;
+
+    start = std::clock();
     for (int i = 0; i < T; i++) A.Kar(B);
-    time_t t2 = time(NULL);
+    duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
+    std::cout << "Kar = " << duration << std::endl;
 
-    std::cout << "Kar = " << t2-t1 << std::endl;
-
-    t1 = time(NULL), t2;
+    start = std::clock();
     for (int i = 0; i < T; i++) A*B;
-    t2 = time(NULL);
-
-    std::cout << "* = " << t2-t1 << std::endl;
+    duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
+    std::cout << "* = " << duration << std::endl;
 
 }
 

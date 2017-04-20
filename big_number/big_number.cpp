@@ -562,6 +562,42 @@ big_number &big_number::operator <<=(const int m)
     return *this;
 }
 
+big_number &big_number::operator <<(const int m)
+{
+    if (this->m_capacity - this->m_len < m){
+
+        big_number help(this->m_len + m);
+
+        help = *this;
+
+        for (int i = help.m_len + m - 1; i >= m; i--)
+
+            help.m_data[i] = help.m_data[i - m];
+
+        for (int i = 0; i < m; i++ )
+
+            help.m_data[i] = 0;
+
+        help.m_len = this->m_len + m;
+
+        *this = help;
+
+        return *this;
+    }
+
+    for (int i = m_len + m - 1; i >= m; i--)
+
+        m_data[i] = m_data[i - m];
+
+    for (int i = 0; i < m; i++ )
+
+        m_data[i] = 0;
+
+    m_len += m;
+
+    return *this;
+}
+
 bool big_number::operator >(const big_number &input_number) const
 {
     if (this->m_len > input_number.m_len) return true;
@@ -620,8 +656,6 @@ big_number &big_number::pow(const big_number &y, const big_number &mod)
 
 big_number big_number::Kar(const big_number &v) const
 {
-    //
-
     int l = min(m_len, v.m_len), i;
 
     if (l <= KAR_BASES){
@@ -659,134 +693,13 @@ big_number big_number::Kar(const big_number &v) const
     for (i = l; l < v.m_len; l++) v1.m_data[l - i] = v.m_data[l];
     v1.m_len = l - i;
 
-    big_number A, B, C;
+    big_number A, B;
 
     A = u1.Kar(v1);
 
     B = u0.Kar(v0);
 
-    C = (u1 + u0).Kar(v1 + v0);
-
-    C = C - A - B;
-
-    A <<= 2*baseNum;
-
-    C <<= baseNum;
-
-    big_number rezult = A + C + B;
-
-    return rezult;
-
-    //
-
-//    if ((this->m_len <= KAR_BASES) || (v.m_len <= KAR_BASES)){
-
-//        big_number A;
-//        A = (*this) * v;
-//        return A;
-//    }
-
-//    int l, k;
-
-//    if ((m_len - m_len/2) > (v.m_len - v.m_len/2)){
-//        l = m_len - m_len/2;
-//        k = m_len - l;
-//    }
-
-//    else{
-//        l = v.m_len - v.m_len/2;
-//        k = v.m_len - l;
-//    }
-//    big_number u0(l), v0(l), u1, v1;
-
-//    if (m_len - l <= 0) {
-//        u1.m_capacity = u1.m_len = 1;
-//        u1.m_data = new Base[u1.m_capacity];
-//        u1.m_data[0] = 0;
-//    }
-//    else{
-//        u1.m_capacity = u1.m_len = k;
-//        u1.m_data = new Base[u1.m_capacity];
-//        for (int i = 0; i < m_len - l; i++)
-//            if(m_len > i+l) u1.m_data[i] = m_data[i+l];
-//            else u1.m_data[i] = 0;
-//    }
-
-//    if (v.m_len - l <= 0){
-//        v1.m_capacity = v1.m_len = 1;
-//        v1.m_data = new Base[v1.m_capacity];
-//        v1.m_data[0] = 0;
-//    }
-//    else{
-//        v1.m_capacity = v1.m_len = k;
-//        v1.m_data = new Base[v1.m_capacity];
-//        for (int i = 0; i < v.m_len - l; i++)
-//            if(v.m_len > i+l) v1.m_data[i] = v.m_data[i+l];
-//            else v1.m_data[i] = 0;
-//    }
-
-
-//    u0.m_capacity = u0.m_len = l;
-//    for (int i = 0; i < l; i++)
-//        if(m_len > i) u0.m_data[i] = m_data[i];
-//        else u0.m_data[i] = 0;
-
-//    v0.m_capacity = v0.m_len = l;
-//    for (int i = 0; i < l; i++)
-//        if(v.m_len > i) v0.m_data[i] = v.m_data[i];
-//        else v0.m_data[i] = 0;
-
-//    u1.checkLength();
-//    if (u1.m_len == 0){
-
-//        u1.m_len++;
-//        u1.m_data[0] = 0;
-//    }
-
-//    v1.checkLength();
-//    if (v1.m_len == 0){
-
-//        v1.m_len++;
-//        v1.m_data[0] = 0;
-//    }
-
-//    u0.checkLength();
-//    if (u0.m_len == 0){
-
-//        u0.m_len++;
-//        u0.m_data[0] = 0;
-//    }
-
-//    v0.checkLength();
-//    if (v0.m_len == 0){
-
-//        v0.m_len++;
-//        v0.m_data[0] = 0;
-//    }
-
-//    big_number A, B, C;
-
-//    A = u1.Kar(v1);
-
-//    B = u0.Kar(v0);
-
-//    C = (u1 + u0).Kar(v1 + v0);
-
-//    big_number Z(10);
-
-//    Z = C - A;
-
-//    Z = C - A - B;
-
-//    C = C - A - B;
-
-//    A <<= 2*l;
-
-//    C <<= l;
-
-//    big_number rezult = A + C + B;
-
-//    return rezult;
+    return ((A << 2*baseNum) + (((u1 + u0).Kar(v1 + v0) - A - B) << baseNum) + B);
 }
 
 int big_number::function2(big_number &r) const
