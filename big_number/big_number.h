@@ -59,6 +59,8 @@ public:
 
     big_number operator * ( Base input_number ) const;
 
+    big_number operator ^ ( const int power ) const;
+
     big_number operator / ( const big_number & input_number ) const;
 
     big_number operator % ( const big_number & input_number ) const;
@@ -73,9 +75,13 @@ public:
 
     bool operator == ( const big_number & input_number ) const;
 
+    bool operator >= ( const big_number & input_number ) const;
+
     big_number& pow (const big_number & y, const big_number & mod );
 
     big_number Kar (const big_number & v) const;
+
+    big_number Bar (const big_number & m, big_number &z) const;
 
    // bool operator == ( Base & input_number ) const;
 

@@ -480,6 +480,16 @@ big_number big_number::operator *(Base input_number) const
 
 }
 
+big_number big_number::operator ^(const int power) const
+{
+    big_number result = *this;
+
+    for (int i = 1; i < power; i++) result = result * (*this);
+
+    return result;
+
+}
+
 big_number big_number::operator /(const big_number & input_number) const
 {
     //make q and r
@@ -611,9 +621,9 @@ bool big_number::operator >(const big_number &input_number) const
             if (this->m_data[i] > input_number.m_data[i]) return true;
 
             if (this->m_data[i] < input_number.m_data[i]) return false;
-
-            if (i == 0) return false;
         }
+
+    return true;
 }
 
 bool big_number::operator ==(const big_number &input_number) const
@@ -623,6 +633,24 @@ bool big_number::operator ==(const big_number &input_number) const
     for (int i = this->m_len - 1; i >= 0; i--)
 
         if (this->m_data[i] != input_number.m_data[i]) return false;
+
+    return true;
+}
+
+bool big_number::operator >=(const big_number &input_number) const
+{
+    if (this->m_len > input_number.m_len) return true;
+
+    if (this->m_len < input_number.m_len) return false;
+
+    if (this->m_len == input_number.m_len)
+
+        for (int i = this->m_len - 1; i >= 0; i--){
+
+            if (this->m_data[i] > input_number.m_data[i]) return true;
+
+            if (this->m_data[i] < input_number.m_data[i]) return false;
+        }
 
     return true;
 }
@@ -700,6 +728,43 @@ big_number big_number::Kar(const big_number &v) const
     B = u0.Kar(v0);
 
     return ((A << 2*baseNum) + (((u1 + u0).Kar(v1 + v0) - A - B) << baseNum) + B);
+}
+
+big_number big_number::Bar(const big_number & m, big_number &z) const
+{
+    big_number b(2);
+    b.m_data[0] = 0;
+    b.m_data[1] = 1;
+    b.m_len = 2;
+
+    if (z.m_len == 0){
+        z = b ^ (2*(m.m_len + 1));
+        z = z / m;
+    }
+
+    big_number w = b ^ (m.m_len + 2);
+
+    big_number q = ((*this / (b ^ m.m_len) * z) / w);
+
+    big_number r1 = *this % w;
+
+    big_number r2 = (q * m) % w;
+
+    big_number r;
+
+    if (r1 >= r2) r = r1 - r2;
+    else r = w + r1 - r2;
+
+    int i = 0;
+
+    while ((r >= m) && (i < 50000)){
+        r = r - m;
+        i++;
+    }
+
+    if (i >= 900) cout << "i = " << i << endl;
+
+    return r;
 }
 
 int big_number::function2(big_number &r) const

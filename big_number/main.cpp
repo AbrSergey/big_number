@@ -19,14 +19,59 @@ using namespace std;
 void test_pow();
 void test_Kar_1();
 void test_Kar_2();
+void test_Bar_1();
+void test_Bar_2();
 
 int main(){
 
-   // big_number a(2, FillTypeRandom), b(2, FillTypeRandom), c(8);
+    test_Bar_2();
 
-    test_Kar_2();
+//    test_Kar_2();
 
     return 0;
+}
+
+void test_Bar_1(){
+
+    for (int i = 0; i < 10; i++){
+
+        big_number x(rand()%2000, FillTypeRandom);
+        big_number m(rand()%1100, FillTypeRandom);
+        big_number z, C, D;
+
+        C = x.Bar(m, z);
+        D = x%m;
+
+        if (C == D) std::cout << "True";
+
+        else std::cout << "False";
+
+        std::cout << endl;
+    }
+}
+
+void test_Bar_2(){
+
+    int mod_x = 2000, mod_m = 1100, T = 10;
+
+    big_number z;
+    big_number x(mod_x, FillTypeRandom);
+    big_number m(mod_m, FillTypeRandom);
+
+    clock_t start;
+    double duration;
+
+    start = std::clock();
+    for (int i = 0; i < T; i++) x.Bar(m, z);
+    duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
+    std::cout << "Bar = " << duration << std::endl;
+
+    start = std::clock();
+    for (int i = 0; i < T; i++) x%m;
+    duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
+    std::cout << "% = " << duration << std::endl;
+
+
 }
 
 void test_Kar_1(){
