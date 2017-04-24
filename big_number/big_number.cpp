@@ -54,6 +54,8 @@ big_number::big_number(std::string str)
 
         m_len = m_capacity;
 
+        for (int i = 0; i < m_capacity; i++) m_data[i] = 0;
+
         for (int i = numberElements, base_num = 0; base_num <= full; ++base_num, i -= NUM_HEX_DIGITS_IN_BASE){
 
             for (int j = 1; j <= NUM_HEX_DIGITS_IN_BASE; ++j){
@@ -572,6 +574,17 @@ big_number &big_number::operator <<=(const int m)
     return *this;
 }
 
+big_number &big_number::operator >>=(const int m)
+{
+
+    for (int i = 0; i < m_len; i++)
+        m_data[i] = m_data[i+m];
+
+    m_len -= m;
+
+    return *this;
+}
+
 big_number &big_number::operator <<(const int m)
 {
     if (this->m_capacity - this->m_len < m){
@@ -604,6 +617,16 @@ big_number &big_number::operator <<(const int m)
         m_data[i] = 0;
 
     m_len += m;
+
+    return *this;
+}
+
+big_number &big_number::operator >>(const int m){
+
+    for (int i = 0; i < m_len; i++)
+        m_data[i] = m_data[i+m];
+
+    m_len -= m;
 
     return *this;
 }
@@ -737,34 +760,24 @@ big_number big_number::Bar(const big_number & m, big_number &z) const
     b.m_data[1] = 1;
     b.m_len = 2;
 
-    if (z.m_len == 0){
-        z = b ^ (2*(m.m_len + 1));
-        z = z / m;
-    }
-
     big_number w = b ^ (m.m_len + 2);
 
-    big_number q = ((*this / (b ^ m.m_len) * z) / w);
+    big_number a = *this;
+
+    a >>= m.m_len;
+
+    big_number q = (a * z) / w;
 
     big_number r1 = *this % w;
 
     big_number r2 = (q * m) % w;
 
-    big_number r;
+    if (r1 >= r2) r1 = r1 - r2;
+    else r1 = w + r1 - r2;
 
-    if (r1 >= r2) r = r1 - r2;
-    else r = w + r1 - r2;
+    while (r1 >= m) r1 = r1 - m;
 
-    int i = 0;
-
-    while ((r >= m) && (i < 50000)){
-        r = r - m;
-        i++;
-    }
-
-    if (i >= 900) cout << "i = " << i << endl;
-
-    return r;
+    return r1;
 }
 
 int big_number::function2(big_number &r) const
@@ -1061,6 +1074,11 @@ void big_number::allocate_and_fill_zeroes(int len)
     m_len = m_capacity;
 
     memset(m_data, 0 , m_len * sizeof(Base));
+}
+
+int big_number::len() const
+{
+    return m_len;
 }
 
 int charToHex( char x ){

@@ -19,25 +19,39 @@ using namespace std;
 void test_pow();
 void test_Kar_1();
 void test_Kar_2();
+big_number zComp (const big_number & m);
 void test_Bar_1();
 void test_Bar_2();
 
 int main(){
 
-    test_Bar_2();
-
 //    test_Kar_2();
 
+    test_Bar_2();
+
     return 0;
+}
+
+big_number zComp (const big_number & m){
+
+    big_number b("0x1"), z;
+    b <<= 1;
+
+    z = b ^ (2*(m.len() + 1));
+
+    return (z / m);
 }
 
 void test_Bar_1(){
 
     for (int i = 0; i < 10; i++){
 
-        big_number x(rand()%2000, FillTypeRandom);
-        big_number m(rand()%1100, FillTypeRandom);
+        big_number m(rand()%500, FillTypeRandom);
+        big_number x(m.len()*2-1, FillTypeRandom);
+
         big_number z, C, D;
+
+        z = zComp(m);
 
         C = x.Bar(m, z);
         D = x%m;
@@ -52,22 +66,29 @@ void test_Bar_1(){
 
 void test_Bar_2(){
 
-    int mod_x = 2000, mod_m = 1100, T = 10;
+    int mod_m = 1000, T = 10;
 
     big_number z;
-    big_number x(mod_x, FillTypeRandom);
     big_number m(mod_m, FillTypeRandom);
+
+    z = zComp (m);
 
     clock_t start;
     double duration;
 
     start = std::clock();
-    for (int i = 0; i < T; i++) x.Bar(m, z);
+    for (int i = 0; i < T; i++){
+        big_number x(m.len()*2, FillTypeRandom);
+        x.Bar(m, z);
+    }
     duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
     std::cout << "Bar = " << duration << std::endl;
 
     start = std::clock();
-    for (int i = 0; i < T; i++) x%m;
+    for (int i = 0; i < T; i++){
+        big_number x(m.len()*2, FillTypeRandom);
+        x%m;
+    }
     duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
     std::cout << "% = " << duration << std::endl;
 
@@ -145,335 +166,3 @@ void test_pow(){
     }
     return;
 }
-
-
-
-/*
-bool inspection (const big_number & a,const big_number & b,const big_number & c);
-
-void print_error(const big_number & a,const big_number & b,const big_number & c,const big_number & d, const big_number  e = ZERO);
-
-int main(){
-
-    string test_root_dir = "/home/sergey/tests";
-
-    string test_name = "bigint_div_tests";
-
-    char test_num_str [4];
-
-    for(int i = 1; i <= 70; i++){
-
-        sprintf(test_num_str,"%03d",i);
-
-        string datname =  test_root_dir + "/" + test_name + "/" + test_num_str + ".dat";
-
-        ifstream in_dat_file(datname.c_str());
-
-        if (!in_dat_file)
-            cout << "cant open " << datname << endl;
-
-        string num_1_str, num_2_str;
-
-        in_dat_file >> num_1_str;
-
-        in_dat_file >> num_2_str;
-
-        big_number a (num_1_str);
-
-        big_number b (num_2_str);
-
-        string ansname =  test_root_dir + "/" + test_name + "/" + test_num_str + ".ans";
-
-        ifstream in_ans_file(ansname);
-
-        if (!in_ans_file)
-            cout << "cant open " << datname << endl;
-
-
-        string ans_str;
-
-        in_ans_file >> ans_str;
-
-        big_number c (ans_str);
-
-        if(a / b == c)
-            printf("TEST %d PASSED\n", i);
-        else
-        {
-            printf("TEST %d FAILED\n", i);
-
-            a.printHex();
-            b.printHex();
-            (a/b).printDbg();
-            c.printDbg();
-            break;
-        }
-    }
-}
-
-*/
-/*
-    srand(time(0));
-
-    const int NUM_TESTS = 10;
-
-    const int NUM_BASES = 8000;
-
-    for (int i = 0; i < NUM_TESTS; i++){
-
-        cout << endl << " Test № " << i << " ";
-
-        big_number a(rand() % NUM_BASES + 1, FillTypeRandom);
-
-        big_number b(rand() % NUM_BASES + 1, FillTypeRandom);
-
-        big_number c(rand() % NUM_BASES + 1, FillTypeRandom );
-
-        if (!inspection(a, b, c)) break;
-    }
-    return 0;
-
-}
-
-bool inspection (const big_number & a,const big_number & b,const big_number & c){
-
-     big_number x, y, z, m, n, p, t;
-
-     try
-     {
-         cout << endl << "Add: ";
-
-         x = a + b;
-         y = b + a;
-
-         if ( x == y)
-             cout << "OK";
-         else {
-             cout << "a + b = b + a" << endl;
-             print_error(a,b,x,y,c);
-             return false;
-         }
-
-         x = a + b + c;
-         y = c + b + a;
-
-         if ( x == y)
-             cout << "OK";
-         else {
-             cout << "a + b + c = c + b + a" << endl;
-             print_error(a,b,x,y,c);
-             return false;
-         }
-
-         x = a + b + c;
-         y = a + (b + c);
-
-         if ( x == y)
-             cout << "OK";
-         else {
-             cout << "a + b + c = a + (b + c)" << endl;
-             print_error(a,b,x,y,c);
-             return false;
-         }
-
-         cout << endl << "Sub: ";
-
-         x = a + b - b;
-         y = a;
-
-         if ( x == y)
-             cout << "OK";
-         else {
-             cout << "a + b - b =a" << endl;
-             print_error(a,b,x,y,c);
-             return false;
-         }
-
-         x = a + b + c - b - c;
-         y = a;
-
-         if ( x == y)
-             cout << "OK";
-         else {
-             cout << "a + b + c - b - c = a" << endl;
-             print_error(a,b,x,y,c);
-             return false;
-         }
-
-         x = a + b + c - c;
-         y = a + b;
-
-         if ( x == y)
-             cout << "OK";
-         else {
-             cout << "aa + b + c - c = a + b" << endl;
-             print_error(a,b,x,y,c);
-             return false;
-         }
-
-         cout << endl << "Mul: " ;
-
-         x = a*b*c;
-         y = c*b*a;
-
-         if ( x == y)
-             cout << "OK";
-         else {
-             cout << "a*b*c =c*b*a" << endl;
-             print_error(a,b,x,y,c);
-             return false;
-         }
-
-         x = a*b*c;
-         y = a*(b*c);
-
-         if ( x == y)
-             cout << "OK";
-         else {
-             cout << "a*b*c =a*(b*c)" << endl;
-             print_error(a,b,x,y,c);
-             return false;
-         }
-
-         x = ( a + b )*c;
-         y = a*c + b*c;
-
-         if ( x == y)
-             cout << "OK";
-         else {
-             cout << "( a + b )*c =a*c + b*c" << endl;
-             print_error(a,b,x,y,c);
-             return false;
-         }
-
-         x = ( a + b )*( a + b );
-         y = a*a + a*b + a*b + b*b;
-
-         if ( x == y)
-             cout << "OK";
-         else {
-             cout << "( a + b )*( a + b ) =a*a + a*b + a*b + b*b" << endl;
-             print_error(a,b,x,y,c);
-             return false;
-         }
-
-         x = ( a + b + c - b )*b;
-         y = a*b + c*b;
-
-         if ( x == y)
-             cout << "OK";
-         else {
-             cout << "( a + b + c - b )*b =a*b + c*b" << endl;
-             print_error(a,b,x,y,c);
-             return false;
-         }
-
-         cout << endl << "div:";
-
-
-         m = a / b;
-
-         n  = m*b;
-
-         p = a % b;
-
-         t = n + p;
-
-        // x = ( a / b )*b + a % b;
-        // y = a;
-
-         if ( t == a)
-             cout << "OK";
-         else {
-             cout << "( a / b )*b + a % b =a" << endl;
-             print_error(a,b,x,y,c);
-
-             m.printHex();
-
-             p.printHex();
-
-             n.printHex();
-
-             t.printHex();
-
-             a.printHex();
-
-             return false;
-         }
-
-         x = ( a / b )*b;
-         y = a;
-
-         if (y > x || y == x)
-             cout << "OK";
-         else {
-              cout << "( a / b )*b=a" << endl;
-             print_error(a,b,x,y,c);
-             return false;
-         }
-
-         x = ( a*b ) / b;
-
-         y = a;
-
-         if ( x == y)
-             cout << "OK";
-         else {
-             cout << "( a*b ) / b = a" << endl;
-             print_error(a,b,x,y,c);
-             return false;
-         }
-
-         x = ( a*b*c ) / c;
-         y = a*b;
-
-         if ( x == y)
-             cout << "OK";
-         else {
-             cout << "( a*b*c ) / c = a*b" << endl;
-             print_error(a,b,x,y,c);
-             return false;
-         }
-
-         x = ( a*b*c ) / ( a*b );
-
-         y= c;
-
-         if ( x == y)
-             cout << "OK";
-         else {
-              cout << "( a*b*c ) / ( a*b ) = c" << endl;
-             print_error(a,b,x,y,c);
-             return false;
-         }
-
-         cout << endl;
-
-     }
-     catch(std::logic_error & e)
-     {
-         cout << e.what();
-     }
-
-     return true;
-}
-
-void print_error(const big_number & a,const big_number & b,const big_number & c,const big_number & d, const big_number  e){
-
-    cout << "FAILED" << endl;
-
-    a.printHex();
-
-    b.printHex();
-
-    e.printHex();
-
-    c.printHex();
-
-    d.printHex();
-
-    c.printDbg();
-
-    d.printDbg();
-}
-*/
