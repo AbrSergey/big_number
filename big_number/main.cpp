@@ -25,7 +25,7 @@ void test_Bar_2();
 
 int main(){
 
-//    test_Kar_2();
+//    test_Kar_1();
 
     test_Bar_2();
 
@@ -46,7 +46,7 @@ void test_Bar_1(){
 
     for (int i = 0; i < 10; i++){
 
-        big_number m(rand()%500, FillTypeRandom);
+        big_number m(rand()%1200, FillTypeRandom);
         big_number x(m.len()*2-1, FillTypeRandom);
 
         big_number z, C, D;
@@ -66,7 +66,7 @@ void test_Bar_1(){
 
 void test_Bar_2(){
 
-    int mod_m = 1000, T = 10;
+    int mod_m = 1000, T = 1;
 
     big_number z;
     big_number m(mod_m, FillTypeRandom);

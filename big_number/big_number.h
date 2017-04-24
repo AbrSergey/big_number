@@ -65,15 +65,13 @@ public:
 
     big_number operator % ( const big_number & input_number ) const;
 
-    big_number& operator = ( const big_number & input_number );
+    big_number &operator = ( const big_number & input_number );
 
-    big_number& operator <<= ( const int m );
+    big_number &operator <<= ( const int m );
 
-    big_number& operator >>= ( const int m );
+    big_number operator << ( const int m ) const;
 
-    big_number& operator << ( const int m );
-
-    big_number &operator >> ( const int m );
+    big_number operator >> (const int m) const;
 
     bool operator > ( const big_number & input_number ) const;
 

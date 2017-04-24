@@ -574,61 +574,61 @@ big_number &big_number::operator <<=(const int m)
     return *this;
 }
 
-big_number &big_number::operator >>=(const int m)
+big_number big_number::operator <<(const int m) const
 {
+        big_number result = *this;
 
-    for (int i = 0; i < m_len; i++)
-        m_data[i] = m_data[i+m];
+        if (result.m_capacity - result.m_len < m){
 
-    m_len -= m;
+            big_number help(result.m_len + m);
 
-    return *this;
-}
+            help = result;
 
-big_number &big_number::operator <<(const int m)
-{
-    if (this->m_capacity - this->m_len < m){
+            for (int i = help.m_len + m - 1; i >= m; i--)
 
-        big_number help(this->m_len + m);
+                help.m_data[i] = help.m_data[i - m];
 
-        help = *this;
+            for (int i = 0; i < m; i++ )
 
-        for (int i = help.m_len + m - 1; i >= m; i--)
+                help.m_data[i] = 0;
 
-            help.m_data[i] = help.m_data[i - m];
+            help.m_len = result.m_len + m;
+
+            result = help;
+
+            return result;
+        }
+
+        for (int i = result.m_len + m - 1; i >= m; i--)
+
+            result.m_data[i] = result.m_data[i - m];
 
         for (int i = 0; i < m; i++ )
 
-            help.m_data[i] = 0;
+            result.m_data[i] = 0;
 
-        help.m_len = this->m_len + m;
+        result.m_len += m;
 
-        *this = help;
-
-        return *this;
-    }
-
-    for (int i = m_len + m - 1; i >= m; i--)
-
-        m_data[i] = m_data[i - m];
-
-    for (int i = 0; i < m; i++ )
-
-        m_data[i] = 0;
-
-    m_len += m;
-
-    return *this;
+        return result;
 }
 
-big_number &big_number::operator >>(const int m){
+big_number big_number::operator >>(const int m) const
+{
+    if (m >= m_len){
+        big_number result(1);
+        result.m_len = 1;
+        result.m_data[0] = 0;
+        return result;
+    }
 
-    for (int i = 0; i < m_len; i++)
-        m_data[i] = m_data[i+m];
+    big_number result = *this;
 
-    m_len -= m;
+    for (int i = 0; i < result.m_len - m; i++)
+        result.m_data[i] = result.m_data[i+m];
 
-    return *this;
+    result.m_len -= m;
+
+    return result;
 }
 
 bool big_number::operator >(const big_number &input_number) const
@@ -760,20 +760,20 @@ big_number big_number::Bar(const big_number & m, big_number &z) const
     b.m_data[1] = 1;
     b.m_len = 2;
 
-    big_number w = b ^ (m.m_len + 2);
+//    big_number a = (*this >> m.m_len);
 
-    big_number a = *this;
+//    big_number q = (((*this >> m.m_len) * z) >> (m.m_len + 2));
 
-    a >>= m.m_len;
+    big_number r1(m.m_len + 2);
 
-    big_number q = (a * z) / w;
+    for (int i = 0; i < m.m_len + 2; i++) r1.m_data[i] = m_data[i];
+    r1.m_len = m.m_len + 2;
 
-    big_number r1 = *this % w;
-
-    big_number r2 = (q * m) % w;
+    big_number r2 = (((*this >> m.m_len) * z) >> (m.m_len + 2))*m;
+    r2.m_len = m.m_len + 2;
 
     if (r1 >= r2) r1 = r1 - r2;
-    else r1 = w + r1 - r2;
+    else r1 = (b << (m.m_len + 1)) + r1 - r2;
 
     while (r1 >= m) r1 = r1 - m;
 
