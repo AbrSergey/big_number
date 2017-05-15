@@ -576,40 +576,40 @@ big_number &big_number::operator <<=(const int m)
 
 big_number big_number::operator <<(const int m) const
 {
-        big_number result = *this;
+    big_number result = *this;
 
-        if (result.m_capacity - result.m_len < m){
+    if (result.m_capacity - result.m_len < m){
 
-            big_number help(result.m_len + m);
+        big_number help(result.m_len + m);
 
-            help = result;
+        help = result;
 
-            for (int i = help.m_len + m - 1; i >= m; i--)
+        for (int i = help.m_len + m - 1; i >= m; i--)
 
-                help.m_data[i] = help.m_data[i - m];
-
-            for (int i = 0; i < m; i++ )
-
-                help.m_data[i] = 0;
-
-            help.m_len = result.m_len + m;
-
-            result = help;
-
-            return result;
-        }
-
-        for (int i = result.m_len + m - 1; i >= m; i--)
-
-            result.m_data[i] = result.m_data[i - m];
+            help.m_data[i] = help.m_data[i - m];
 
         for (int i = 0; i < m; i++ )
 
-            result.m_data[i] = 0;
+            help.m_data[i] = 0;
 
-        result.m_len += m;
+        help.m_len = result.m_len + m;
+
+        result = help;
 
         return result;
+    }
+
+    for (int i = result.m_len + m - 1; i >= m; i--)
+
+        result.m_data[i] = result.m_data[i - m];
+
+    for (int i = 0; i < m; i++ )
+
+        result.m_data[i] = 0;
+
+    result.m_len += m;
+
+    return result;
 }
 
 big_number big_number::operator >>(const int m) const
@@ -755,27 +755,30 @@ big_number big_number::Kar(const big_number &v) const
 
 big_number big_number::Bar(const big_number & m, big_number &z) const
 {
+    std::cout << "m.m_len = " << m.m_len << endl;
+    std::cout << "z.m_len = " << z.m_len << endl;
+
     big_number b(2);
     b.m_data[0] = 0;
     b.m_data[1] = 1;
     b.m_len = 2;
 
-//    big_number a = (*this >> m.m_len);
+    big_number r1(m.m_len + 1);
 
-//    big_number q = (((*this >> m.m_len) * z) >> (m.m_len + 2));
+    for (int i = 0; i < m.m_len + 1; i++) r1.m_data[i] = m_data[i];
+    r1.m_len = m.m_len + 1;
 
-    big_number r1(m.m_len + 2);
-
-    for (int i = 0; i < m.m_len + 2; i++) r1.m_data[i] = m_data[i];
-    r1.m_len = m.m_len + 2;
-
-    big_number r2 = (((*this >> m.m_len) * z) >> (m.m_len + 2))*m;
-    r2.m_len = m.m_len + 2;
+    big_number r2 = (((*this >> (m.m_len - 1)) * z) >> (m.m_len + 1))*m;
+    r2.m_len = m.m_len + 1;
 
     if (r1 >= r2) r1 = r1 - r2;
     else r1 = (b << (m.m_len + 1)) + r1 - r2;
 
-    while (r1 >= m) r1 = r1 - m;
+    while (r1 >= m){
+        r1 = r1 - m;
+        std::cout << "*";
+    }
+    std::cout << std::endl;
 
     return r1;
 }

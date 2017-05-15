@@ -25,9 +25,7 @@ void test_Bar_2();
 
 int main(){
 
-//    test_Kar_1();
-
-    test_Bar_2();
+    test_Bar_1();
 
     return 0;
 }
@@ -37,16 +35,16 @@ big_number zComp (const big_number & m){
     big_number b("0x1"), z;
     b <<= 1;
 
-    z = b ^ (2*(m.len() + 1));
+    z = b ^ (2*m.len()); //переписать
 
     return (z / m);
 }
 
 void test_Bar_1(){
 
-    for (int i = 0; i < 10; i++){
+    for (int i = 0; i < 1; i++){
 
-        big_number m(rand()%1200, FillTypeRandom);
+        big_number m(1, FillTypeRandom);
         big_number x(m.len()*2-1, FillTypeRandom);
 
         big_number z, C, D;
@@ -66,7 +64,7 @@ void test_Bar_1(){
 
 void test_Bar_2(){
 
-    int mod_m = 1000, T = 1;
+    int mod_m = 2, T = 10;
 
     big_number z;
     big_number m(mod_m, FillTypeRandom);
@@ -97,7 +95,7 @@ void test_Bar_2(){
 
 void test_Kar_1(){
 
-    int T = 50, M = 1000, m, n;
+    int T = 500, M = 1000, m, n;
 
     for (int i = 0; i < T; i++){
 
@@ -111,11 +109,7 @@ void test_Kar_1(){
         C = A.Kar(B);
         D = A*B;
 
-        if (C == D) std::cout << "True";
-
-        else std::cout << "False";
-
-        std::cout << endl;
+        if (!(C == D))    std::cout << "False";
     }
 }
 
