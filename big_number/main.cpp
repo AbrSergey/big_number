@@ -19,29 +19,18 @@ using namespace std;
 void test_pow();
 void test_Kar_1();
 void test_Kar_2();
-big_number zComp (const big_number & m);
 void test_Bar_1();
 void test_Bar_2();
 
 int main(){
 
-//    test_Bar_2();
+    test_Bar_2();
 
-    big_number a(55, FillTypeRandomBits);
+//    big_number a(55, FillTypeRandomBits);
 
-    a.testMillerRabin(2);
+//    a.testMillerRabin(2);
 
     return 0;
-}
-
-big_number zComp (const big_number & m){
-
-    big_number z("0x1");
-
-    for (int i = 0; i < 2*m.len(); i++)
-        z <<=1;
-
-    return (z / m);
 }
 
 void test_Bar_1(){
@@ -53,7 +42,7 @@ void test_Bar_1(){
 
         big_number z, C, D;
 
-        z = zComp(m);
+        z = m.zComp();
 
         C = x.Bar(m, z);
         D = x%m;
@@ -68,12 +57,12 @@ void test_Bar_1(){
 
 void test_Bar_2(){
 
-    int mod_m = 2, T = 10;
+    int mod_m = 2000, T = 100;
 
     big_number z;
     big_number m(mod_m, FillTypeRandom);
 
-    z = zComp (m);
+    z = m.zComp();
 
     clock_t start;
     double duration;

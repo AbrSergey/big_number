@@ -755,8 +755,8 @@ big_number big_number::Kar(const big_number &v) const
 
 big_number big_number::Bar(const big_number & m, big_number &z) const
 {
-    std::cout << "m.m_len = " << m.m_len << endl;
-    std::cout << "z.m_len = " << z.m_len << endl;
+//    std::cout << "m.m_len = " << m.m_len << endl;
+//    std::cout << "z.m_len = " << z.m_len << endl;
 
     big_number b(2);
     b.m_data[0] = 0;
@@ -776,9 +776,9 @@ big_number big_number::Bar(const big_number & m, big_number &z) const
 
     while (r1 >= m){
         r1 = r1 - m;
-        std::cout << "*";
+//        std::cout << "*";
     }
-    std::cout << std::endl;
+//    std::cout << std::endl;
 
     return r1;
 }
@@ -1084,21 +1084,59 @@ int big_number::len() const
     return m_len;
 }
 
-bool big_number::testMillerRabin(int reliable)
+big_number big_number::zComp()
 {
-    big_number s("0x1");
-    big_number ss("0x1");
+    big_number z(2*m_len + 1);
 
-    m_data[0] -= 1;
+    z.m_data[2*m_len] = 1;
 
-    big_number x = (*this)%s;
+    z.m_len = 2*m_len + 1;
 
-    while (x.m_data[0]== 0){
-        s = s + ss;
-        x = (*this)%s;
+    return z/(*this);
+}
+
+unsigned int big_number::zeroCount()
+{
+    unsigned int zero = 0, i;
+
+    for (i = 0; m_data[i] == 0; zero += sizeof(Base)*8, i++){}
+
+    unsigned int x = 1;
+
+    while (m_data[i] &= x){
+
+        zero++;
+        x <<= 1;
     }
+    return zero;
+}
 
-    return false;
+bool big_number::testMillerRabin(int t)
+{
+    unsigned int s, x;
+
+    m_data[0]--;
+
+    s = (*this).zeroCount();
+
+    x = s/(sizeof(Base)*8);
+
+    big_number r(m_len - x + 1);
+
+    for (int i = 0; i < m_len - x; i++)
+        r.m_data[i] = m_data[i + x];
+
+    r.m_len = m_len - x;
+
+    for (int i = 0; i < r.m_len; i++)
+        r.m_data[i] >>= s%(sizeof(Base)*8);
+
+    //********************************//
+
+    for (int i = 0; i < t; i++){
+
+        big_number a = ()
+    }
 }
 
 int charToHex( char x ){

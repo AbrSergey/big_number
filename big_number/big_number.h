@@ -103,7 +103,11 @@ public:
 
     int len() const;
 
-    bool testMillerRabin (int reliable);
+    big_number zComp ();
+
+    unsigned int zeroCount (); // need to test
+
+    bool testMillerRabin (int t);
 };
 
 const big_number ZERO = big_number(1);
