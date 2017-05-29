@@ -1084,6 +1084,23 @@ int big_number::len() const
     return m_len;
 }
 
+bool big_number::testMillerRabin(int reliable)
+{
+    big_number s("0x1");
+    big_number ss("0x1");
+
+    m_data[0] -= 1;
+
+    big_number x = (*this)%s;
+
+    while (x.m_data[0]== 0){
+        s = s + ss;
+        x = (*this)%s;
+    }
+
+    return false;
+}
+
 int charToHex( char x ){
 
     if (x >= '0' && x <= '9') return x - '0';

@@ -25,17 +25,21 @@ void test_Bar_2();
 
 int main(){
 
-    test_Bar_1();
+//    test_Bar_2();
+
+    big_number a(55, FillTypeRandomBits);
+
+    a.testMillerRabin(2);
 
     return 0;
 }
 
 big_number zComp (const big_number & m){
 
-    big_number b("0x1"), z;
-    b <<= 1;
+    big_number z("0x1");
 
-    z = b ^ (2*m.len()); //переписать
+    for (int i = 0; i < 2*m.len(); i++)
+        z <<=1;
 
     return (z / m);
 }

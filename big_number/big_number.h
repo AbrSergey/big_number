@@ -102,6 +102,8 @@ public:
     void allocate_and_fill_zeroes(int len);
 
     int len() const;
+
+    bool testMillerRabin (int reliable);
 };
 
 const big_number ZERO = big_number(1);
