@@ -24,11 +24,16 @@ void test_Bar_2();
 
 int main(){
 
-    test_Bar_2();
+    big_number a(9, FillTypeRandomBits);
 
-//    big_number a(55, FillTypeRandomBits);
+//    a.printHex();
 
-//    a.testMillerRabin(2);
+//    bool result = a.testMillerRabin(2);
+
+//    if (result) cout << "prime numbe" << endl;
+//    else cout << "compound number" << endl;
+
+    a.testfft();
 
     return 0;
 }

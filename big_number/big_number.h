@@ -75,11 +75,13 @@ public:
 
     bool operator > ( const big_number & input_number ) const;
 
+    bool operator < ( const unsigned int a) const;
+
     bool operator == ( const big_number & input_number ) const;
 
     bool operator >= ( const big_number & input_number ) const;
 
-    big_number& pow (const big_number & y, const big_number & mod );
+    big_number pow (const big_number & y, const big_number & mod );
 
     big_number Kar (const big_number & v) const;
 
@@ -108,7 +110,13 @@ public:
     unsigned int zeroCount (); // need to test
 
     bool testMillerRabin (int t);
+
+    big_number * fft(int n, int k, big_number &w, const big_number *a);
+
+    void testfft();
 };
+
+
 
 const big_number ZERO = big_number(1);
 
