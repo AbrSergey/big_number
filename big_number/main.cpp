@@ -21,21 +21,52 @@ void test_Kar_1();
 void test_Kar_2();
 void test_Bar_1();
 void test_Bar_2();
+big_number primeNumberGenerator(unsigned int lenBits);
 
 int main(){
 
-    big_number a(9, FillTypeRandomBits);
+    for (int n = 0; n < 1; n++){
 
-//    a.printHex();
+        big_number a = primeNumberGenerator(33);
 
-//    bool result = a.testMillerRabin(2);
+        cout << "prime number " << n << " = ";
 
-//    if (result) cout << "prime numbe" << endl;
-//    else cout << "compound number" << endl;
+        a.printHex();
 
-    a.testfft();
+        cout << endl;
+    }
+
+
+//    for (int i = 41; i < 100; i++){
+//        big_number a(i, FillTypeRandomBits);
+
+//        a.printDbg();
+
+//        a.printHex();
+//    }
+
+
+
 
     return 0;
+}
+
+big_number primeNumberGenerator(unsigned int lenBits)
+{
+    bool result;
+
+    do{
+//        srand(time(0));
+
+        big_number a(lenBits, FillTypeRandomBits);
+
+        result = a.testMillerRabin(10);
+
+        if (result) return a;
+    }
+    while (!result);
+
+
 }
 
 void test_Bar_1(){

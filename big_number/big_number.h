@@ -111,7 +111,7 @@ public:
 
     bool testMillerRabin (int t);
 
-    big_number * fft(int n, int k, big_number &w, const big_number *a);
+    big_number * fft(const int &n, const int &k, big_number &w, const big_number *a);
 
     void testfft();
 };

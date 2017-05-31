@@ -688,26 +688,6 @@ bool big_number::operator >=(const big_number &input_number) const
 
 big_number big_number::pow(const big_number &y, const big_number &mod)
 {
-//    if (m_len == 1 && y.m_len == 1 && mod.m_data[0]){
-
-//        if (y.m_data[0] == 0){
-//            big_number res(1);
-//            res.m_data[0] = 1;
-//            res.m_len = 1;
-//            return res;
-//        }
-
-//        unsigned int r = 0;
-//        for (int i = 0; i < y.m_data[0]; i++)
-//            r += (m_data[0] * r) % mod.m_data[0];
-
-//        big_number res(1);
-//        res.m_data[0] = r % mod.m_data[0];
-//        res.m_len = 1;
-
-//        return res;
-//    }
-
     // declaration
     big_number z(mod.m_len, FillTypeZero), q = *this;
 
@@ -1141,56 +1121,38 @@ unsigned int big_number::zeroCount()
 
 bool big_number::testMillerRabin(int t)
 {
-    unsigned int s, x;
+    big_number one("0x1"), r(m_len), two("0x2");
 
-    big_number one("0x1"), r(m_len), max("0xffffffff"), two("0x2");
+    big_number max = (*this) - one;
 
-    (*this) = (*this) - one;
-
-    s = function2(r);
-
-    //********************************//
+    unsigned int s = max.function2(r);
 
     for (int i = 0; i < t; i++){
 
         big_number b(m_len, FillTypeRandomBits);
 
-        b.m_data[0] += 2;
-
-        if (b > (*this)) b = b % (*this);
-
-        m_data[0]++;
+        b = two + b%(max - two);
 
         big_number y = b.pow(r, (*this));
 
         if ((!(y == one)) && (!(y == max))){
 
-            big_number j("0x1");
-
-            while ((j < s) && !(y%(*this) == max%(*this))){
-
-                y = y.pow(two,(*this));
+            for (unsigned int j = 1; (j < s) && !(y == max); y = (y * y) % (*this), j++)
                 if (y == one) return 0;
-                j = j + one;
-            }
 
-            if (!(y%(*this) == max%(*this))) return 0;
+            if (!(y == max)) return 0;
         }
     }
     return 1;
 }
 
-big_number *big_number::fft(int n, int k, big_number &w, const big_number *a)
+big_number *big_number::fft(const int &n, const int &k, big_number &w, const big_number *a)
 {
     big_number *R = new big_number[n];
 
     big_number *S = new big_number[n];
 
-    big_number *b = new big_number[n];
-
     for (int i = 0; i < n; i++) R[i] = a[i];
-
-//    big_number **pS = &S, **pR = &R, **p;
 
     for (int l = k - 1; l >= 0; l--){
 
@@ -1212,9 +1174,9 @@ big_number *big_number::fft(int n, int k, big_number &w, const big_number *a)
         }
     }
 
-    for (int i = 0; i < n; i++) b[i] = R[rev(i, k)];
+    for (int i = 0; i < n; i++) S[i] = R[rev(i, k)];
 
-    return b;
+    return S;
 }
 
 void big_number::testfft()
@@ -1243,9 +1205,7 @@ void big_number::testfft()
 
     b = m.fft(8, 3, w, a);
 
-    b->printDbg();
-
-//    return 0;
+    for (int i = 0; i < n; i++) b[i].printHex();
 }
 
 int charToHex( char x ){
