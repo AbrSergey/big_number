@@ -10,3 +10,4 @@ big_number/big_number.pro.user
 big_number/build/
 /build
 .gitignore.swp
+build-big_number/
