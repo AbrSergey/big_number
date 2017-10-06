@@ -21,6 +21,13 @@ enum FillType{
     FillTypeRandomBits
 };
 
+struct outTDM {
+
+    big_number *prime_number;
+
+    int power;
+};
+
 class big_number
 {
 private:
@@ -114,6 +121,10 @@ public:
     big_number * fft(const int &n, const int &k, big_number &w, const big_number *a);
 
     void testfft();
+
+    // factorization
+
+    outTDM * testDivisorMethod (const big_number & n);
 };
 
 

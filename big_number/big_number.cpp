@@ -1208,6 +1208,41 @@ void big_number::testfft()
     for (int i = 0; i < n; i++) b[i].printHex();
 }
 
+outTDM *big_number::testDivisorMethod(const big_number &n)
+{
+    int k = 1, t = 0;
+
+    if (n == 1){
+
+        outTDM result;
+
+        result.prime_number = 1;
+
+        result.power = 1;
+
+        return result;
+    }
+
+    big_number d(1);
+
+    d.m_data[0] = 2;
+
+    d.m_len = 1;
+
+    big_number q, r;
+
+    q = n / d;
+
+    r = n % d;
+
+    if (r == 0) {
+
+        t++;
+
+
+    }
+}
+
 int charToHex( char x ){
 
     if (x >= '0' && x <= '9') return x - '0';

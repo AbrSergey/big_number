@@ -27,7 +27,7 @@ int main(){
 
     for (int n = 0; n < 1; n++){
 
-        big_number a = primeNumberGenerator(33);
+        big_number a = primeNumberGenerator(32);
 
         cout << "prime number " << n << " = ";
 
