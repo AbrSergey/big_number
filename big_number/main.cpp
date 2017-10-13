@@ -25,28 +25,25 @@ big_number primeNumberGenerator(unsigned int lenBits);
 
 int main(){
 
-    for (int n = 0; n < 1; n++){
+    big_number x("0x1");
 
-        big_number a = primeNumberGenerator(32);
+    outTDM *r;
 
-        cout << "prime number " << n << " = ";
+    r = x.testDivisorMethod(x);
 
-        a.printHex();
-
-        cout << endl;
-    }
+    cout << *r.prime_number << endl << *r.power << endl;
 
 
-//    for (int i = 41; i < 100; i++){
-//        big_number a(i, FillTypeRandomBits);
+//    for (int n = 0; n < 1; n++){
 
-//        a.printDbg();
+//        big_number a = primeNumberGenerator(32);
+
+//        cout << "prime number " << n << " = ";
 
 //        a.printHex();
+
+//        cout << endl;
 //    }
-
-
-
 
     return 0;
 }

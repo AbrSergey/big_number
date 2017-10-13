@@ -6,6 +6,8 @@
 
 #define KAR_BASES 70
 
+class big_number;
+
 typedef unsigned int Base;
 
 typedef unsigned short int HalfBase;
@@ -126,8 +128,6 @@ public:
 
     outTDM * testDivisorMethod (const big_number & n);
 };
-
-
 
 const big_number ZERO = big_number(1);
 

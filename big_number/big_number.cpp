@@ -1212,15 +1212,17 @@ outTDM *big_number::testDivisorMethod(const big_number &n)
 {
     int k = 1, t = 0;
 
-    if (n == 1){
+    big_number one ("1");
+
+    if (n == one){
 
         outTDM result;
 
-        result.prime_number = 1;
+        result.prime_number = &one; //??
 
         result.power = 1;
 
-        return result;
+        return &result; //??
     }
 
     big_number d(1);
@@ -1235,12 +1237,12 @@ outTDM *big_number::testDivisorMethod(const big_number &n)
 
     r = n % d;
 
-    if (r == 0) {
+//    if (r == 0) {
 
-        t++;
+//        t++;
 
 
-    }
+//    }
 }
 
 int charToHex( char x ){
