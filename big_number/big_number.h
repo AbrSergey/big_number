@@ -76,6 +76,8 @@ public:
 
     big_number &operator = ( const big_number & input_number );
 
+    big_number &operator = ( const int input_number );
+
     big_number &operator <<= ( const int m );
 
     big_number operator << ( const int m ) const;
@@ -87,6 +89,8 @@ public:
     bool operator < ( const unsigned int a) const;
 
     bool operator == ( const big_number & input_number ) const;
+
+    bool operator == ( const int input_number) const;
 
     bool operator >= ( const big_number & input_number ) const;
 
@@ -126,7 +130,7 @@ public:
 
     // factorization
 
-    outTDM * testDivisorMethod (const big_number & n);
+    outTDM testDivisorMethod (const big_number & n);
 };
 
 const big_number ZERO = big_number(1);

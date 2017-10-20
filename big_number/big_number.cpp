@@ -522,7 +522,7 @@ big_number big_number::operator %(const big_number &input_number) const
 
 big_number &big_number::operator =(const big_number &input_number)
 {
-    m_len = input_number.m_len;
+        m_len = input_number.m_len;
 
     if ( m_capacity < m_len){
 
@@ -536,6 +536,25 @@ big_number &big_number::operator =(const big_number &input_number)
     for (int i = 0; i < m_len; ++i)
 
         m_data[i] = input_number.m_data[i];
+
+    return *this;
+}
+
+big_number &big_number::operator =(const int input_number)
+{
+    m_len = 1;
+
+    if (m_capacity == 0){
+
+        m_data = new Base [1];
+
+        m_capacity = 1;
+    }
+    else
+
+        for (int i = 0; i < m_capacity; i++) m_data[i] = 0;
+
+    m_data[0] = input_number;
 
     return *this;
 }
@@ -666,6 +685,13 @@ bool big_number::operator ==(const big_number &input_number) const
         if (this->m_data[i] != input_number.m_data[i]) return false;
 
     return true;
+}
+
+bool big_number::operator ==(const int input_number) const
+{
+    if (this->m_len == 1 && this->m_data[0] == input_number) return true;
+
+    return false;
 }
 
 bool big_number::operator >=(const big_number &input_number) const
@@ -1208,21 +1234,19 @@ void big_number::testfft()
     for (int i = 0; i < n; i++) b[i].printHex();
 }
 
-outTDM *big_number::testDivisorMethod(const big_number &n)
+outTDM big_number::testDivisorMethod(const big_number &n)
 {
     int k = 1, t = 0;
 
-    big_number one ("1");
+    outTDM result;
 
-    if (n == one){
+    if (n == 1){
 
-        outTDM result;
-
-        result.prime_number = &one; //??
+        result.prime_number = 0;
 
         result.power = 1;
 
-        return &result; //??
+        return result; //??
     }
 
     big_number d(1);
@@ -1237,12 +1261,22 @@ outTDM *big_number::testDivisorMethod(const big_number &n)
 
     r = n % d;
 
-//    if (r == 0) {
+    if (r == 0) {
 
-//        t++;
+        t++;
 
+        result.prime_number = new big_number;
 
-//    }
+//        result.prime_number->m_capacity = 1;
+
+//        result.prime_number->m_len = 1;
+
+        result.prime_number = q;
+
+        result.power = 1;   //??
+    }
+
+    return result;
 }
 
 int charToHex( char x ){
