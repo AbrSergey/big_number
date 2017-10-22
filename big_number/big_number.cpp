@@ -1234,49 +1234,83 @@ void big_number::testfft()
     for (int i = 0; i < n; i++) b[i].printHex();
 }
 
-outTDM big_number::testDivisorMethod(const big_number &n)
+outTDM *big_number::testDivisorMethod(const big_number &input_number, int &d)
 {
-    int k = 1, t = 0;
+    big_number n = input_number, q, r;
 
-    outTDM result;
+    int k = 0, t = 0;
 
-    if (n == 1){
+    outTDM *result = new outTDM[1];
 
-        result.prime_number = 0;
+    while (!(n == 1)){
+
+        q = n / d[k];
+
+        r = n % d[k];
+
+        if (r == 0) {
+
+            t++;
+
+            result[0].prime_number = new big_number; //как привязать к t
+
+            *result[0].prime_number = d[k];
+
+            result[0].power = 1;
+
+            n = q;
+        }
+        else
+
+            if (q > d[k]){
+
+                k++;
+
+                result = new outTDM;
+            }
+    }
+    else{
+
+        *result.prime_number = 0;
 
         result.power = 1;
-
-        return result; //??
-    }
-
-    big_number d(1);
-
-    d.m_data[0] = 2;
-
-    d.m_len = 1;
-
-    big_number q, r;
-
-    q = n / d;
-
-    r = n % d;
-
-    if (r == 0) {
-
-        t++;
-
-        result.prime_number = new big_number;
-
-//        result.prime_number->m_capacity = 1;
-
-//        result.prime_number->m_len = 1;
-
-        result.prime_number = q;
-
-        result.power = 1;   //??
     }
 
     return result;
+
+//    if (n == 1){
+
+//        *result.prime_number = 0;
+
+//        result.power = 1;
+
+//        return result;
+//    }
+
+//    big_number d;
+
+//    d = 2;
+
+//    big_number q, r;
+
+//    q = n / d;
+
+//    r = n % d;
+
+//    if (r == 0) {
+
+//        t++;
+
+//        result.prime_number = new big_number;
+
+//        *result.prime_number = d;
+
+//        result.power = 1;
+
+//        n = q;
+//    }
+
+//    return result;
 }
 
 int charToHex( char x ){

@@ -130,7 +130,7 @@ public:
 
     // factorization
 
-    outTDM testDivisorMethod (const big_number & n);
+    outTDM * testDivisorMethod (const big_number & input_number, int &d);
 };
 
 const big_number ZERO = big_number(1);

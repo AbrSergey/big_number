@@ -25,13 +25,18 @@ big_number primeNumberGenerator(unsigned int lenBits);
 
 int main(){
 
-    big_number x("0x2");
+    big_number x("0x3");
 
-    outTDM r;
+    outTDM *r;
 
-    r = x.testDivisorMethod(x);
+    int d[2];
 
-    cout << r.prime_number << endl << r.power << endl;
+    d[0] = 2; d[1] = 3;
+
+    r = x.testDivisorMethod(x, *d);
+
+    r->prime_number->printDbg();
+    cout << endl << r->power << endl;
 
 
 //    for (int n = 0; n < 1; n++){
