@@ -6,7 +6,7 @@
 
 #define KAR_BASES 70
 
-class big_number;
+struct outTDM;
 
 typedef unsigned int Base;
 
@@ -23,12 +23,7 @@ enum FillType{
     FillTypeRandomBits
 };
 
-struct outTDM {
 
-    big_number *prime_number;
-
-    int power;
-};
 
 class big_number
 {
@@ -130,7 +125,14 @@ public:
 
     // factorization
 
-    outTDM * testDivisorMethod (const big_number & input_number, int &d);
+    int testDivisorMethod (const big_number & input_number, outTDM * result);
+};
+
+struct outTDM {
+
+    big_number prime_number;
+
+    int power;
 };
 
 const big_number ZERO = big_number(1);

@@ -1234,83 +1234,55 @@ void big_number::testfft()
     for (int i = 0; i < n; i++) b[i].printHex();
 }
 
-outTDM *big_number::testDivisorMethod(const big_number &input_number, int &d)
+int big_number::testDivisorMethod(const big_number &input_number, outTDM *result)
 {
-    big_number n = input_number, q, r;
+    big_number n = input_number, q, r, a;
 
-    int k = 0, t = 0;
+    int k = 0, t = 0, lenD = 0;
 
-    outTDM *result = new outTDM[1];
+    int d[30] = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113};
 
     while (!(n == 1)){
 
-        q = n / d[k];
+        a = d[k];
 
-        r = n % d[k];
+        q = n / a;
+
+        r = n % a;
 
         if (r == 0) {
 
+            if (result[lenD - 1].prime_number == a && lenD > 0) result[lenD - 1].power += 1;
+
+            else{
+
+                result[lenD].prime_number = a;
+
+                result[lenD].power += 1;
+
+                lenD++;
+            }
+
             t++;
-
-            result[0].prime_number = new big_number; //как привязать к t
-
-            *result[0].prime_number = d[k];
-
-            result[0].power = 1;
 
             n = q;
         }
         else
 
-            if (q > d[k]){
+            if (q > a) k++; // проверку к++, если делители кончились сообщить и выход при q<=d
+        `
 
-                k++;
-
-                result = new outTDM;
-            }
-    }
-    else{
-
-        *result.prime_number = 0;
-
-        result.power = 1;
     }
 
-    return result;
+    if (t == 0) {
 
-//    if (n == 1){
+        result[0].prime_number = n;
+        result[0].power = 1;
 
-//        *result.prime_number = 0;
+        return 1;
+    }
 
-//        result.power = 1;
-
-//        return result;
-//    }
-
-//    big_number d;
-
-//    d = 2;
-
-//    big_number q, r;
-
-//    q = n / d;
-
-//    r = n % d;
-
-//    if (r == 0) {
-
-//        t++;
-
-//        result.prime_number = new big_number;
-
-//        *result.prime_number = d;
-
-//        result.power = 1;
-
-//        n = q;
-//    }
-
-//    return result;
+    return lenD;
 }
 
 int charToHex( char x ){
