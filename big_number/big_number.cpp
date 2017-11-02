@@ -1238,16 +1238,14 @@ int big_number::testDivisorMethod(const big_number &input_number, outTDM *result
 {
     big_number n = input_number, q, r, a;
 
-    int k = 0, t = 0, lenD = 0;
+    int k = 0, lenD = 0;
 
     int d[30] = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113};
 
     while (!(n == 1)){
 
         a = d[k];
-
         q = n / a;
-
         r = n % a;
 
         if (r == 0) {
@@ -1257,32 +1255,25 @@ int big_number::testDivisorMethod(const big_number &input_number, outTDM *result
             else{
 
                 result[lenD].prime_number = a;
-
                 result[lenD].power += 1;
-
                 lenD++;
             }
-
-            t++;
 
             n = q;
         }
         else
 
-            if (q > a) k++; // проверку к++, если делители кончились сообщить и выход при q<=d
-        `
+            if (q > a && k < 29) k++;
 
+            else {
+
+                result[lenD].prime_number = n;
+                result[lenD].power = 1;
+                return lenD;
+            }
     }
 
-    if (t == 0) {
-
-        result[0].prime_number = n;
-        result[0].power = 1;
-
-        return 1;
-    }
-
-    return lenD;
+    return --lenD;
 }
 
 int charToHex( char x ){

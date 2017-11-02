@@ -45,7 +45,7 @@ int main(){
 
 void factorizationMTD(){
 
-    big_number x("105");
+    big_number x("997911"); //105
 
     outTDM *result = new outTDM[30];
 
@@ -53,7 +53,7 @@ void factorizationMTD(){
 
     lenResult = x.testDivisorMethod(x, result);
 
-    for (int i = 0; i < lenResult; i++){
+    for (int i = 0; i <= lenResult; i++){
 
         cout << "prime number " << i + 1 << " = ";
 
