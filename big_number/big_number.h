@@ -125,7 +125,7 @@ public:
 
     // factorization
 
-    int testDivisorMethod (const big_number & input_number, outTDM * result);
+    int testDivisorMethod (const big_number & input_number, outTDM * result, bool &isFactorized);
 };
 
 struct outTDM {

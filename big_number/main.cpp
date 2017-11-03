@@ -45,15 +45,20 @@ int main(){
 
 void factorizationMTD(){
 
-    big_number x("997911"); //105
+    big_number x("0xabcdef123456789abcdef");
 
     outTDM *result = new outTDM[30];
 
     int lenResult;
 
-    lenResult = x.testDivisorMethod(x, result);
+    bool isFactorized;
+
+    lenResult = x.testDivisorMethod(x, result, isFactorized);
 
     for (int i = 0; i <= lenResult; i++){
+
+        if (isFactorized) cout << "Factorized" << endl;
+        else cout << "Not factorized" << endl;
 
         cout << "prime number " << i + 1 << " = ";
 

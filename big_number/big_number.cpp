@@ -1234,13 +1234,15 @@ void big_number::testfft()
     for (int i = 0; i < n; i++) b[i].printHex();
 }
 
-int big_number::testDivisorMethod(const big_number &input_number, outTDM *result)
+int big_number::testDivisorMethod(const big_number &input_number, outTDM *result, bool &isFactorized)
 {
     big_number n = input_number, q, r, a;
 
     int k = 0, lenD = 0;
 
-    int d[30] = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113};
+    int d[31] = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127};
+
+    int SIZE = sizeof(d)/sizeof(int) - 1;
 
     while (!(n == 1)){
 
@@ -1255,7 +1257,7 @@ int big_number::testDivisorMethod(const big_number &input_number, outTDM *result
             else{
 
                 result[lenD].prime_number = a;
-                result[lenD].power += 1;
+                result[lenD].power = 1;
                 lenD++;
             }
 
@@ -1263,16 +1265,21 @@ int big_number::testDivisorMethod(const big_number &input_number, outTDM *result
         }
         else
 
-            if (q > a && k < 29) k++;
+            if (q > a && k < SIZE) k++;
 
             else {
 
                 result[lenD].prime_number = n;
                 result[lenD].power = 1;
+
+                if (k == SIZE) isFactorized = false;
+                else isFactorized = true;
+
                 return lenD;
             }
     }
 
+    isFactorized = true;
     return --lenD;
 }
 
