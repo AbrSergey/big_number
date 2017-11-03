@@ -45,7 +45,7 @@ int main(){
 
 void factorizationMTD(){
 
-    big_number x("0xabcdef123456789abcdef");
+    big_number x("0x7ffc6b2c40319b1");
 
     outTDM *result = new outTDM[30];
 

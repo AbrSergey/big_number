@@ -64,7 +64,9 @@ big_number::big_number(std::string str)
 
                 if ( i - NUM_HEX_DIGITS_IN_BASE - 1 + j >= 2){
 
-                    unsigned char x = charToHex( str[i - NUM_HEX_DIGITS_IN_BASE - 1 + j] );
+                    char q = str[i - NUM_HEX_DIGITS_IN_BASE - 1 + j];
+
+                    unsigned char x = charToHex( q);
 
                     m_data[base_num] |= x;
 
@@ -1286,8 +1288,12 @@ int big_number::testDivisorMethod(const big_number &input_number, outTDM *result
 int charToHex( char x ){
 
     if (x >= '0' && x <= '9') return x - '0';
-    
-    else return x - 'A' + 10;
+    if (x >= 'a' && x <= 'f') return x - 'a' + 10;
+    if (x >= 'A' && x <= 'F') return x - 'A' + 10;
+    else{
+        cout << "Incorrect data input: throw function charToHex()!";
+        return 0;
+    }
 }
 
 Base mulBase( Base a, Base b, Base * minorRes){
