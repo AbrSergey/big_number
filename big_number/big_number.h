@@ -59,6 +59,8 @@ public:
 
     big_number operator - ( const big_number & input_number ) const;
 
+    big_number operator - ( const int & n ) const;
+
     big_number operator * ( const big_number & input_number ) const;
 
     big_number operator * ( DoubleBase input_number ) const;
@@ -129,13 +131,13 @@ public:
 
     void testfft();
 
-    big_number sqrt ();
+    big_number sqrt () const;
 
     // factorization
 
     int testDivisorMethod (const big_number & input_number, outTDM * result, bool &isFactorized);
 
-    big_number sieveMethodFerma (big_number & n); // returns an array big_number of two numbers (if the number is prime then number and zero)
+    void siftingMethodFerma (const big_number & n, big_number & a, big_number & b); // returns an array big_number of two numbers (if the number is prime then number and zero)
 };
 
 struct outTDM {

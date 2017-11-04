@@ -403,6 +403,54 @@ big_number big_number::operator -(const big_number &input_number) const
     return rezult;
 }
 
+big_number big_number::operator -(const int &n) const
+{
+    big_number input_number(1);
+    input_number.m_len = 1;
+    input_number.m_data[0] = n;
+
+    int max, min;
+
+    if (m_len > input_number.m_len){
+
+        max = m_len;
+        min = input_number.m_len;
+    }
+
+    else{
+
+        max = input_number.m_len;
+        min = m_len;
+        }
+
+    big_number rezult(max);
+
+    rezult.m_len = rezult.m_capacity;
+
+    int regist = 0;
+
+    for (int i = 0; i < min; ++i){
+
+        rezult.m_data[i] = m_data[i] - input_number.m_data[i] - regist;
+
+        regist = 0;
+
+        if (rezult.m_data[i] > m_data[i]) regist = 1;
+    }
+    for (int i = min; i < max; ++i){
+
+            rezult.m_data[i] = m_data[i] - regist;
+
+            regist = 0;
+
+            if (rezult.m_data[i] > m_data[i]) regist = 1;
+    }
+
+    rezult.checkLength();
+
+    return rezult;
+}
+
 big_number big_number::operator *(const big_number &input_number) const
 {
 
@@ -1278,7 +1326,7 @@ void big_number::testfft()
     for (int i = 0; i < n; i++) b[i].printHex();
 }
 
-big_number big_number::sqrt()
+big_number big_number::sqrt() const
 {
     big_number x = (*this + 1) / 2, y = *this;
 
@@ -1340,7 +1388,7 @@ int big_number::testDivisorMethod(const big_number &input_number, outTDM *result
     return --lenD;
 }
 
-big_number big_number::sieveMethodFerma(big_number &n)
+void big_number::siftingMethodFerma (const big_number & n, big_number & a, big_number & b)
 {
     // generate array of pairwise prime module
 
@@ -1348,7 +1396,7 @@ big_number big_number::sieveMethodFerma(big_number &n)
     int * M = new int[r];
     M[0] = 3; M[1] = 4; M[2] = 5; M[3] = 7;
 
-    // create sieve table
+    // create sifting table
 
     bool **s = new bool * [r]; // M[0],..,M[r]
     for (int i = 0; i < r; i++)
@@ -1363,15 +1411,77 @@ big_number big_number::sieveMethodFerma(big_number &n)
             h.m_capacity = h.m_len = 1;
             h.m_data = new Base[h.m_len];
             h.m_data[0] = j*j;
+            h = h - n - 1;  //??????
+            h = h % M[i];
 
-            if ((h - n) % M[i] == 0) s[i][j] = true;
+            if (h == 0) s[i][j] = true; // условие добавить нужно
             else s[i][j] = false;
         }
 
     // point 2
 
+    big_number x = n.sqrt();
 
+    if (x*x == n){
+        a = n;
+        b = big_number("0x1");
+        return;
+    }
 
+    // point 3
+
+    x = x + 1;
+    int *k = new int[r];
+
+    for (int i = 0; i < r; i++){
+        big_number h = x % M[i];
+
+        if (h.m_len > 1){
+            cout << "throw: k[i] is very long in siftingMethodFerma()";
+            return;
+        }
+        else k[i] = h.m_data[0];
+    }
+
+    // point 4
+
+    while(true){
+
+        bool flagSifting = true;
+
+        for (int i = 0; i < r; i++)
+            if (s[i][k[i]] == false){
+                flagSifting = false;
+                break;
+            }
+
+        if (flagSifting){
+
+            big_number z = x*x - n;
+            big_number y = z.sqrt();
+
+            if (y*y == z){
+                a = x + y;
+                b = x - y;
+                return;
+            }
+        }
+
+        // point 5
+
+        x = x + 1;
+
+        if (x == ((n + 1) / 2)){
+            a = n;
+            b = 1;
+            return;
+        }
+        else{
+            for (int i = 0; i < r; i++){
+                k[i] = (k[i] + 1) % M[i];
+            }
+        }
+    }
 }
 
 int charToHex( char x ){

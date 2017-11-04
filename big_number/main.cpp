@@ -23,19 +23,11 @@ void test_Bar_1();
 void test_Bar_2();
 big_number primeNumberGenerator(unsigned int lenBits);
 void factorizationMTD();
+void factorizationSiftingMethodFerma();
 
 int main(){
 
-    //factorizationMTD();
-
-    big_number n("0x3166a464f6448b864a864");
-
-    n.printHex();
-
-    big_number a = n.sqrt();
-
-    a.printHex();
-
+    factorizationSiftingMethodFerma();
 
 //    for (int n = 0; n < 1; n++){
 
@@ -49,6 +41,24 @@ int main(){
 //    }
 
     return 0;
+}
+
+void factorizationSiftingMethodFerma(){
+
+//    big_number n("0x1");
+
+//    n = n - 2;
+
+//    n.printHex();
+
+    big_number n("1111");
+    n.printHex();
+
+    big_number a, b;
+    n.siftingMethodFerma(n, a, b);
+
+    a.printHex();
+    b.printHex();
 }
 
 void factorizationMTD(){
