@@ -26,7 +26,15 @@ void factorizationMTD();
 
 int main(){
 
-    factorizationMTD();
+    //factorizationMTD();
+
+    big_number n("0x3166a464f6448b864a864");
+
+    n.printHex();
+
+    big_number a = n.sqrt();
+
+    a.printHex();
 
 
 //    for (int n = 0; n < 1; n++){

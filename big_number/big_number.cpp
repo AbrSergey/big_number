@@ -349,6 +349,16 @@ big_number big_number::operator +(const big_number & input_number) const
     return rezult;
 }
 
+big_number big_number::operator +(const int &n) const
+{
+    big_number input_number;
+    input_number.m_capacity = input_number.m_len = 1;
+    input_number.m_data = new Base[1];
+    input_number.m_data[0] = n;
+
+    return (*this + input_number);
+}
+
 big_number big_number::operator -(const big_number &input_number) const
 {
     int max, min;
@@ -509,6 +519,22 @@ big_number big_number::operator /(const big_number & input_number) const
     return q;
 }
 
+big_number big_number::operator /(const int &input_number) const
+{
+    big_number n;
+    n.m_capacity = n.m_len = 1;
+    n.m_data = new Base[1];
+    n.m_data[0] = input_number;
+
+    big_number q, r;
+
+    division (n, q, r);
+
+    q.checkLength();
+
+    return q;
+}
+
 big_number big_number::operator %(const big_number &input_number) const
 {
     //make q and r
@@ -516,6 +542,22 @@ big_number big_number::operator %(const big_number &input_number) const
     big_number q, r;
 
     division(input_number, q, r);
+
+    r.checkLength();
+
+    return r;
+}
+
+big_number big_number::operator %(const int &input_number) const
+{
+    big_number n;
+    n.m_capacity = n.m_len = 1;
+    n.m_data = new Base[1];
+    n.m_data[0] = input_number;
+
+    big_number q, r;
+
+    division(n, q, r);
 
     r.checkLength();
 
@@ -1236,6 +1278,19 @@ void big_number::testfft()
     for (int i = 0; i < n; i++) b[i].printHex();
 }
 
+big_number big_number::sqrt()
+{
+    big_number x = (*this + 1) / 2, y = *this;
+
+    while (!(x >= y)){
+
+        y = x;
+        x = (*this / x + x) / 2;
+    }
+
+    return y;
+}
+
 int big_number::testDivisorMethod(const big_number &input_number, outTDM *result, bool &isFactorized)
 {
     big_number n = input_number, q, r, a;
@@ -1283,6 +1338,40 @@ int big_number::testDivisorMethod(const big_number &input_number, outTDM *result
 
     isFactorized = true;
     return --lenD;
+}
+
+big_number big_number::sieveMethodFerma(big_number &n)
+{
+    // generate array of pairwise prime module
+
+    int r = 4;
+    int * M = new int[r];
+    M[0] = 3; M[1] = 4; M[2] = 5; M[3] = 7;
+
+    // create sieve table
+
+    bool **s = new bool * [r]; // M[0],..,M[r]
+    for (int i = 0; i < r; i++)
+        s[i] = new bool[M[i]]; // j = 0,.., M[i]-1
+
+    // fill the table
+
+    for (int i = 0; i < r; i++)
+        for (int j = 0; j < M[i]; j++){
+
+            big_number h;
+            h.m_capacity = h.m_len = 1;
+            h.m_data = new Base[h.m_len];
+            h.m_data[0] = j*j;
+
+            if ((h - n) % M[i] == 0) s[i][j] = true;
+            else s[i][j] = false;
+        }
+
+    // point 2
+
+
+
 }
 
 int charToHex( char x ){
