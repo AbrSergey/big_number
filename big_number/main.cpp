@@ -45,12 +45,6 @@ int main(){
 
 void factorizationSiftingMethodFerma(){
 
-//    big_number n("0x1");
-
-//    n = n - 2;
-
-//    n.printHex();
-
     big_number n("1111");
     n.printHex();
 
@@ -63,7 +57,7 @@ void factorizationSiftingMethodFerma(){
 
 void factorizationMTD(){
 
-    big_number x("0x7ffc6b2c40319b1");
+    big_number x("25");
 
     outTDM *result = new outTDM[30];
 

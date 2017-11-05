@@ -15,9 +15,18 @@ typedef unsigned short int HalfBase;
 
 typedef unsigned long long DoubleBase;
 
+struct outTDMforSmall {
+
+    int prime_number;
+
+    int power;
+};
+
 int charToHex( char x );
 
 int rev(int i, int k);
+
+int testDivisorMethodForSmall (const int & input_number, outTDMforSmall * result, bool &isFactorized);
 
 Base mulBase( Base a, Base b, Base * majorRes);
 
@@ -965,6 +974,77 @@ void big_number::checkLength()
     for (;m_len > 1 && m_data[m_len - 1] == 0; m_len --){}
 }
 
+int big_number::symbolLegendre(int a, int p)
+{
+    //checking input data
+
+    assert ((p & 1) == 1); // throw: Input incorrect data in symbolLegendre(): 'p' is even!
+
+    if (p > 3){
+        big_number h(1);
+        h.m_len = 1;
+        h.m_data[0] = p;
+        bool e = h.testMillerRabin(10);
+        assert(e); // throw: Input incorrect data in symbolLegendre(): 'p' is not prime!
+    }
+
+    // begin to calculate
+
+    int result = 1;
+    int series = 0; // temporary
+
+    if (a % p == 0) return 0;
+
+    while (series < 10){
+        a = a % p;
+
+        if (a == 1) return result;
+
+        if ((a % p) == (p - 1)) {
+            if (p == (1 % 4)) return result;
+            else if (p == (3 % 4)) return ((-1)*result);
+            else throw std::logic_error("Logic error: a % p == 0");
+        }
+
+        if (a == 2){
+            if ((p % 8) == 1 || (p % 8) == 7) return result;
+            else if ((p % 8) == 3 || (p % 8) == 5) return ((-1)*result);
+            else throw std::logic_error("Logic error: a % p == 0");
+        }
+
+        outTDMforSmall * resNumTmp = new outTDMforSmall[30];
+        bool isFactorized = false;
+        int lenNumbTmp = testDivisorMethodForSmall(a, resNumTmp, isFactorized);
+
+        if (!isFactorized) throw std::logic_error("Not Factorized!");
+
+        for (int i = 0; (i <= lenNumbTmp) && (lenNumbTmp > 0); i++){   // if odd number
+            if ((resNumTmp[i].power | 1) == 1)
+                result *= symbolLegendre(resNumTmp[i].prime_number, p);
+        }
+
+        if (lenNumbTmp > 0) return result;
+        else{
+
+            if ((a % 4) == 1 || (p % 4) == 1){
+                int tmp = a;
+                a = p;
+                p = tmp;
+            }
+            else if ((a % 4) == 3 && (p % 4) == 3){
+                int tmp = a;
+                a = p;
+                p = tmp;
+                result *= -1;
+            }
+            else throw std::logic_error("Logic error: a % p == 0");
+        }
+
+        ++series;
+    }
+    throw std::logic_error("Time is over!");
+}
+
 void big_number::division(const big_number &input_number, big_number &q, big_number &r) const
 {
     // copy *this to u_number and input_number to v_number
@@ -1390,11 +1470,15 @@ int big_number::testDivisorMethod(const big_number &input_number, outTDM *result
 
 void big_number::siftingMethodFerma (const big_number & n, big_number & a, big_number & b)
 {
+//    int tmp = symbolLegendre(1350, 1381);
+//    cout << "Result of symbolLegendre()  = " << tmp << endl;
+//    return;
+
     // generate array of pairwise prime module
 
     int r = 4;
     int * M = new int[r];
-    M[0] = 3; M[1] = 4; M[2] = 5; M[3] = 7;
+    M[0] = 3; M[1] = 5; M[2] = 7; M[3] = 11;
 
     // create sifting table
 
@@ -1411,10 +1495,12 @@ void big_number::siftingMethodFerma (const big_number & n, big_number & a, big_n
             h.m_capacity = h.m_len = 1;
             h.m_data = new Base[h.m_len];
             h.m_data[0] = j*j;
-            h = h - n - 1;  //??????
-            h = h % M[i];
+            h = (h - n - 1) % M[i];
 
-            if (h == 0) s[i][j] = true; // условие добавить нужно
+            assert(h.m_len == 1);
+            int tmp = h.m_data[0];
+
+            if ((h == 0) || (symbolLegendre(tmp, M[i]) == 1)) s[i][j] = true; // условие добавить нужно
             else s[i][j] = false;
         }
 
@@ -1436,11 +1522,10 @@ void big_number::siftingMethodFerma (const big_number & n, big_number & a, big_n
     for (int i = 0; i < r; i++){
         big_number h = x % M[i];
 
-        if (h.m_len > 1){
-            cout << "throw: k[i] is very long in siftingMethodFerma()";
-            return;
-        }
-        else k[i] = h.m_data[0];
+        if (h.m_len > 1)
+            throw std::logic_error("k[i] is very long in siftingMethodFerma()");
+
+        k[i] = h.m_data[0];
     }
 
     // point 4
@@ -1489,10 +1574,8 @@ int charToHex( char x ){
     if (x >= '0' && x <= '9') return x - '0';
     if (x >= 'a' && x <= 'f') return x - 'a' + 10;
     if (x >= 'A' && x <= 'F') return x - 'A' + 10;
-    else{
-        cout << "Incorrect data input: throw function charToHex()!";
-        return 0;
-    }
+    else
+        throw std::logic_error("Incorrect data input!");
 }
 
 Base mulBase( Base a, Base b, Base * minorRes){
@@ -1547,4 +1630,53 @@ int rev(int i, int k)
         j--;
     }
     return res;
+}
+
+int testDivisorMethodForSmall (const int & input_number, outTDMforSmall * result, bool &isFactorized)
+{
+    int n = input_number, q, r, a;
+
+    int k = 0, lenD = 0;
+
+    int d[31] = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127};
+
+    int SIZE = sizeof(d)/sizeof(int) - 1;
+
+    while (!(n == 1)){
+
+        a = d[k];
+        q = n / a;
+        r = n % a;
+
+        if (r == 0) {
+
+            if (result[lenD - 1].prime_number == a && lenD > 0) result[lenD - 1].power += 1;
+
+            else{
+
+                result[lenD].prime_number = a;
+                result[lenD].power = 1;
+                lenD++;
+            }
+
+            n = q;
+        }
+        else
+
+            if (q > a && k < SIZE) k++;
+
+            else {
+
+                result[lenD].prime_number = n;
+                result[lenD].power = 1;
+
+                if (k == SIZE) isFactorized = false;
+                else isFactorized = true;
+
+                return lenD;
+            }
+    }
+
+    isFactorized = true;
+    return --lenD;
 }

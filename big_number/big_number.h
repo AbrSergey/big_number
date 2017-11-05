@@ -39,6 +39,8 @@ private:
 
     friend int checkLength( big_number& );
 
+    friend int symbolLegendre(int, int);
+
 public:
 
     big_number();
@@ -108,6 +110,8 @@ public:
     int function2 (big_number&r ) const;
 
     void checkLength();
+
+    int symbolLegendre(int a, int p);
 
     void division (const big_number & input_number, big_number & q, big_number & r) const;
 
