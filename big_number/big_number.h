@@ -141,7 +141,7 @@ public:
 
     int testDivisorMethod (const big_number & input_number, outTDM * result, bool &isFactorized);
 
-    void siftingMethodFerma (const big_number & n, big_number & a, big_number & b); // returns an array big_number of two numbers (if the number is prime then number and zero)
+    void siftingMethodFerma (const big_number &n, big_number & a, big_number & b); // returns an array big_number of two numbers (if the number is prime then number and zero)
 };
 
 struct outTDM {

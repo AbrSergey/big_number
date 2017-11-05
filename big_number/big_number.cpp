@@ -990,25 +990,25 @@ int big_number::symbolLegendre(int a, int p)
 
     // begin to calculate
 
+    if (a % p == 0) return 0;
+
     int result = 1;
     int series = 0; // temporary
 
-    if (a % p == 0) return 0;
-
     while (series < 10){
-        a = a % p;
+        a %= p;
 
         if (a == 1) return result;
 
-        if ((a % p) == (p - 1)) {
-            if (p == (1 % 4)) return result;
-            else if (p == (3 % 4)) return ((-1)*result);
+        if (a == 2){
+            if ((p % 8 == 1) || (p % 8 == 7)) return result;
+            else if ((p % 8 == 3) || (p % 8 == 5)) return ((-1)*result);
             else throw std::logic_error("Logic error: a % p == 0");
         }
 
-        if (a == 2){
-            if ((p % 8) == 1 || (p % 8) == 7) return result;
-            else if ((p % 8) == 3 || (p % 8) == 5) return ((-1)*result);
+        if ((a % p) == (p - 1)) {
+            if (p % 4 == 1) return result;
+            else if (p % 4 == 3) return ((-1)*result);
             else throw std::logic_error("Logic error: a % p == 0");
         }
 
@@ -1024,14 +1024,20 @@ int big_number::symbolLegendre(int a, int p)
         }
 
         if (lenNumbTmp > 0) return result;
-        else{
 
-            if ((a % 4) == 1 || (p % 4) == 1){
+        resNumTmp->power %= 2;
+        a = resNumTmp->prime_number;
+
+        if (resNumTmp->power == 0) return result;
+
+        else if (a > 2) {
+
+            if ((a % 4 == 1) || (p % 4 == 1)){
                 int tmp = a;
                 a = p;
                 p = tmp;
             }
-            else if ((a % 4) == 3 && (p % 4) == 3){
+            else if ((a % 4 == 3) && (p % 4 == 3)){
                 int tmp = a;
                 a = p;
                 p = tmp;
@@ -1470,7 +1476,7 @@ int big_number::testDivisorMethod(const big_number &input_number, outTDM *result
 
 void big_number::siftingMethodFerma (const big_number & n, big_number & a, big_number & b)
 {
-//    int tmp = symbolLegendre(1350, 1381);
+//    int tmp = symbolLegendre(10, 13);
 //    cout << "Result of symbolLegendre()  = " << tmp << endl;
 //    return;
 
@@ -1478,7 +1484,7 @@ void big_number::siftingMethodFerma (const big_number & n, big_number & a, big_n
 
     int r = 4;
     int * M = new int[r];
-    M[0] = 3; M[1] = 5; M[2] = 7; M[3] = 11;
+    M[0] = 3; M[1] = 4; M[2] = 5; M[3] = 7;
 
     // create sifting table
 
@@ -1495,13 +1501,21 @@ void big_number::siftingMethodFerma (const big_number & n, big_number & a, big_n
             h.m_capacity = h.m_len = 1;
             h.m_data = new Base[h.m_len];
             h.m_data[0] = j*j;
-            h = (h - n - 1) % M[i];
+            h = h - n;
+            h = h - 1;
+            h = h % M[i]; // 0xffffffff - 1111  % 7 = 0x5 ? -1111%7 = 2
 
             assert(h.m_len == 1);
             int tmp = h.m_data[0];
 
-            if ((h == 0) || (symbolLegendre(tmp, M[i]) == 1)) s[i][j] = true; // условие добавить нужно
-            else s[i][j] = false;
+            if(i != 1){
+             if ((h == 0) || (symbolLegendre(tmp, M[i]) == 1)) s[i][j] = true;
+             else s[i][j] = false;
+            }
+            else{
+                if (h == 0) s[i][j] = true;
+                else s[i][j] = false;
+            }
         }
 
     // point 2
