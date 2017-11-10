@@ -41,6 +41,8 @@ private:
 
     friend int symbolLegendre(int, int);
 
+    friend int symbolJacobi(int, int n);
+
 public:
 
     big_number();
@@ -112,6 +114,8 @@ public:
     void checkLength();
 
     int symbolLegendre(int a, int p);
+
+    int symbolJacobi(int a, int p);
 
     void division (const big_number & input_number, big_number & q, big_number & r) const;
 

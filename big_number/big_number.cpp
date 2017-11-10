@@ -1051,6 +1051,30 @@ int big_number::symbolLegendre(int a, int p)
     throw std::logic_error("Time is over!");
 }
 
+int big_number::symbolJacobi(int a, int n)
+{
+    if (a == 0) return 0;
+
+    if (a == 1) return 1;
+
+    int k;
+
+    for (int k = 0; (a & 1) == 0; ++k) a >>= 1;
+
+    int s;
+
+    if ((k & 1 )== 0) s = 1;
+    else {
+        if (((n & 7) == 1) || ((n & 7) == 7)) s = 1;
+        else s = -1;
+    }
+
+    if ((n & 3) == 3 && (a & 3) == 3) s = -s;
+
+    if (a == 1) return s;
+    else return (s*symbolJacobi(n % a, a));
+}
+
 void big_number::division(const big_number &input_number, big_number &q, big_number &r) const
 {
     // copy *this to u_number and input_number to v_number
@@ -1476,15 +1500,15 @@ int big_number::testDivisorMethod(const big_number &input_number, outTDM *result
 
 void big_number::siftingMethodFerma (const big_number & n, big_number & a, big_number & b)
 {
-//    int tmp = symbolLegendre(10, 13);
+//    int tmp = symbolJacobi(7, 15);
 //    cout << "Result of symbolLegendre()  = " << tmp << endl;
 //    return;
 
     // generate array of pairwise prime module
 
-    int r = 4;
+    int r = 3;
     int * M = new int[r];
-    M[0] = 3; M[1] = 4; M[2] = 5; M[3] = 7;
+    M[0] = 3; M[1] = 5; M[2] = 7;
 
     // create sifting table
 
@@ -1497,25 +1521,11 @@ void big_number::siftingMethodFerma (const big_number & n, big_number & a, big_n
     for (int i = 0; i < r; i++)
         for (int j = 0; j < M[i]; j++){
 
-            big_number h;
-            h.m_capacity = h.m_len = 1;
-            h.m_data = new Base[h.m_len];
-            h.m_data[0] = j*j;
-            h = h - n;
-            h = h - 1;
-            h = h % M[i]; // 0xffffffff - 1111  % 7 = 0x5 ? -1111%7 = 2
+            int h = (n % M[i]).m_data[0];
+            h = (j*j + M[i] - h) % M[i];
 
-            assert(h.m_len == 1);
-            int tmp = h.m_data[0];
-
-            if(i != 1){
-             if ((h == 0) || (symbolLegendre(tmp, M[i]) == 1)) s[i][j] = true;
-             else s[i][j] = false;
-            }
-            else{
-                if (h == 0) s[i][j] = true;
-                else s[i][j] = false;
-            }
+            if ((h == 0) || (symbolJacobi(h, M[i]) == 1)) s[i][j] = true;
+            else s[i][j] = false;
         }
 
     // point 2
@@ -1523,8 +1533,8 @@ void big_number::siftingMethodFerma (const big_number & n, big_number & a, big_n
     big_number x = n.sqrt();
 
     if (x*x == n){
-        a = n;
-        b = big_number("0x1");
+        a = x;
+        b = x;
         return;
     }
 
@@ -1533,14 +1543,8 @@ void big_number::siftingMethodFerma (const big_number & n, big_number & a, big_n
     x = x + 1;
     int *k = new int[r];
 
-    for (int i = 0; i < r; i++){
-        big_number h = x % M[i];
-
-        if (h.m_len > 1)
-            throw std::logic_error("k[i] is very long in siftingMethodFerma()");
-
-        k[i] = h.m_data[0];
-    }
+    for (int i = 0; i < r; i++)
+        k[i] = (x % M[i]).m_data[0];
 
     // point 4
 
@@ -1570,7 +1574,7 @@ void big_number::siftingMethodFerma (const big_number & n, big_number & a, big_n
 
         x = x + 1;
 
-        if (x == ((n + 1) / 2)){
+        if (x > ((n + 9) / 6)){
             a = n;
             b = 1;
             return;
