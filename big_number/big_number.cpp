@@ -1057,19 +1057,22 @@ int big_number::symbolJacobi(int a, int n)
 
     if (a == 1) return 1;
 
-    int k;
+    int k = 0;
 
-    for (int k = 0; (a & 1) == 0; ++k) a >>= 1;
+    for (; (a & 1) == 0; ++k) a >>= 1;
 
-    int s;
+    int s = 1;
 
-    if ((k & 1 )== 0) s = 1;
-    else {
-        if (((n & 7) == 1) || ((n & 7) == 7)) s = 1;
-        else s = -1;
+    if (k != 0){
+        if ((k & 1 )== 0) s = 1;
+        else {
+            if (((n & 7) == 1) || ((n & 7) == 7)) s = 1;
+            else s = -1;
+        }
     }
 
-    if ((n & 3) == 3 && (a & 3) == 3) s = -s;
+    if ((n & 3) == 3 && (a & 3) == 3)
+        s = -s;
 
     if (a == 1) return s;
     else return (s*symbolJacobi(n % a, a));
@@ -1500,7 +1503,7 @@ int big_number::testDivisorMethod(const big_number &input_number, outTDM *result
 
 void big_number::siftingMethodFerma (const big_number & n, big_number & a, big_number & b)
 {
-//    int tmp = symbolJacobi(7, 15);
+//    int tmp = symbolJacobi(4, 5);
 //    cout << "Result of symbolLegendre()  = " << tmp << endl;
 //    return;
 

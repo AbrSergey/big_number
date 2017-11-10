@@ -47,44 +47,44 @@ void factorizationSiftingMethodFerma(){
 
     // цикл i=0 до k - длина множителей и перемножить числа и дать алгоритму
 
-//    for (int i = 5; i < 10; i++){
+    for (int i = 28; i < 29; i++){
 
-//        big_number x(i, FillTypeRandomBits);
-//        big_number y(i, FillTypeRandomBits);
-//        big_number z = x * y;
+        big_number x(i, FillTypeRandomBits);
+        big_number y(i, FillTypeRandomBits);
+        big_number z = x * y;
 
-//        big_number n = z;
-//        big_number a, b;
-//        n.siftingMethodFerma(n, a, b); // z = 0x25BEF x = 0x1BB y = 0x15D проверить.
+        big_number n = z;
+        big_number a, b;
+        n.siftingMethodFerma(n, a, b); // z = 0x25BEF x = 0x1BB y = 0x15D проверить.
 
 
-//        if (n == z){
+        if (n == z){
 
-//            cout << "z = "; z.printHex();
-//            cout << "x = "; x.printHex();
-//            cout << "y = "; y.printHex();
+            cout << "z = "; z.printHex();
+            cout << "x = "; x.printHex();
+            cout << "y = "; y.printHex();
 
-//            cout << "n = "; n.printHex();
-//            cout << "a = "; a.printHex();
-//            cout << "b = "; b.printHex();
+            cout << "n = "; n.printHex();
+            cout << "a = "; a.printHex();
+            cout << "b = "; b.printHex();
 
-//            cout << endl;
-//        }
-//        else{
-//            cout << "False! i = " << i;
-//            break;
-//        }
+            cout << endl;
+        }
+        else{
+            cout << "False! i = " << i;
+            break;
+        }
 
-//    }
+    }
 
-    big_number n("0x25BEF");
-    n.printHex();
+//    big_number n("0x25BEF");
+//    n.printHex();
 
-    big_number a, b;
-    n.siftingMethodFerma(n, a, b);
+//    big_number a, b;
+//    n.siftingMethodFerma(n, a, b);
 
-    a.printHex();
-    b.printHex();
+//    a.printHex();
+//    b.printHex();
 }
 
 void factorizationMTD(){
