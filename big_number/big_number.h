@@ -93,11 +93,15 @@ public:
 
     bool operator > ( const big_number & input_number ) const;
 
+    bool operator < ( const big_number & input_number ) const;
+
     bool operator < ( const unsigned int a) const;
 
     bool operator == ( const big_number & input_number ) const;
 
     bool operator == ( const int input_number) const;
+
+    bool operator != ( const int input_number) const;
 
     bool operator >= ( const big_number & input_number ) const;
 
@@ -133,7 +137,7 @@ public:
 
     unsigned int zeroCount (); // need to test
 
-    bool testMillerRabin (int t);
+    bool testMillerRabin (int t) const;
 
     big_number * fft(const int &n, const int &k, big_number &w, const big_number *a);
 
@@ -146,6 +150,10 @@ public:
     int testDivisorMethod (const big_number & input_number, outTDM * result, bool &isFactorized);
 
     void siftingMethodFerma (const big_number &n, big_number & a, big_number & b); // returns an array big_number of two numbers (if the number is prime then number and zero)
+
+    // logarithm
+
+    big_number primitiveRoot () const;
 };
 
 struct outTDM {

@@ -27,7 +27,15 @@ void factorizationSiftingMethodFerma();
 
 int main(){
 
-    factorizationSiftingMethodFerma();
+    big_number m("101");
+
+    big_number g = m.primitiveRoot();
+
+    cout << " g = ";
+
+    g.printHex();
+
+
 
 //    for (int n = 0; n < 1; n++){
 

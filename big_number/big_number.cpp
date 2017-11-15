@@ -768,7 +768,25 @@ bool big_number::operator >(const big_number &input_number) const
             if (this->m_data[i] < input_number.m_data[i]) return false;
         }
 
-    return true;
+    return false;
+}
+
+bool big_number::operator <(const big_number &input_number) const
+{
+    if (this->m_len < input_number.m_len) return true;
+
+    if (this->m_len > input_number.m_len) return false;
+
+    if (this->m_len == input_number.m_len)
+
+        for (int i = this->m_len - 1; i >= 0; i--){
+
+            if (this->m_data[i] < input_number.m_data[i]) return true;
+
+            if (this->m_data[i] > input_number.m_data[i]) return false;
+        }
+
+    return false;
 }
 
 bool big_number::operator <(const unsigned int a) const
@@ -793,6 +811,13 @@ bool big_number::operator ==(const int input_number) const
     if (this->m_len == 1 && this->m_data[0] == input_number) return true;
 
     return false;
+}
+
+bool big_number::operator !=(const int input_number) const
+{
+    if (this->m_len == 1 && this->m_data[0] == input_number) return false;
+
+    return true;
 }
 
 bool big_number::operator >=(const big_number &input_number) const
@@ -1350,7 +1375,7 @@ unsigned int big_number::zeroCount()
     return zero;
 }
 
-bool big_number::testMillerRabin(int t)
+bool big_number::testMillerRabin(int t) const
 {
     big_number one("0x1"), r(m_len), two("0x2");
 
@@ -1588,6 +1613,49 @@ void big_number::siftingMethodFerma (const big_number & n, big_number & a, big_n
             }
         }
     }
+}
+
+big_number big_number::primitiveRoot() const
+{
+    assert (m_len == 1);
+
+    assert ((*this).testMillerRabin(10));
+
+    big_number c = (*this) - 1;
+
+    bool isFactorized;
+
+    outTDM *result = new outTDM[30];
+
+    int len = c.testDivisorMethod(c, result, isFactorized);
+
+    if (isFactorized){
+
+        bool isRoot = false;
+
+        big_number g("0x2"); // ? or unsigned int ?
+
+        while (g < c && !isRoot){
+
+            for (int i = 0; i <= len; i++){
+
+                big_number y = c / result[i].prime_number;
+                big_number tmp = g.pow(y, (*this));
+
+                if (tmp == 1){
+                    isRoot = false;
+                    break;
+                }
+                isRoot = true;
+            }
+
+            if (isRoot) return g;
+            g = g + 1;
+        }
+        throw std::logic_error("Have not found a primitive root!");
+    }
+    else
+        throw std::logic_error("Amazing error");
 }
 
 int charToHex( char x ){
