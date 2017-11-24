@@ -105,7 +105,9 @@ public:
 
     bool operator >= ( const big_number & input_number ) const;
 
-    big_number pow (const big_number & y, const big_number & mod );
+    big_number pow (const big_number & y, const big_number & mod ) const;
+
+    big_number pow (const int y, const big_number & mod ) const;
 
     big_number Kar (const big_number & v) const;
 
@@ -154,6 +156,8 @@ public:
     // logarithm
 
     big_number primitiveRoot () const;
+
+    big_number polygHellman (const big_number & g, const big_number &a) const;
 };
 
 struct outTDM {

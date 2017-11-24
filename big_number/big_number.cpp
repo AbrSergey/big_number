@@ -838,7 +838,7 @@ bool big_number::operator >=(const big_number &input_number) const
     return true;
 }
 
-big_number big_number::pow(const big_number &y, const big_number &mod)
+big_number big_number::pow(const big_number &y, const big_number &mod) const
 {
     // declaration
     big_number z(mod.m_len, FillTypeZero), q = *this;
@@ -863,6 +863,17 @@ big_number big_number::pow(const big_number &y, const big_number &mod)
             if ((y.m_data[i] >> j) & 1 == 1) z = (z * q) % mod;
         }
     return z;
+}
+
+big_number big_number::pow(const int y, const big_number &mod) const
+{
+    big_number z(1);
+
+    z.m_len = 1;
+
+    z.m_data[0] = y;
+
+    return (*this).pow(z,mod);
 }
 
 big_number big_number::Kar(const big_number &v) const
@@ -1656,6 +1667,68 @@ big_number big_number::primitiveRoot() const
     }
     else
         throw std::logic_error("Amazing error");
+}
+
+big_number big_number::polygHellman(const big_number &g, const big_number &a) const
+{
+    // factorization n
+
+    big_number n = (*this) - 1;
+
+    bool isFactorized;
+
+    outTDM *result = new outTDM[30];
+
+    int k = n.testDivisorMethod(n, result, isFactorized);
+
+    // algorithm
+
+    big_number *alpha = new big_number[k];
+
+    big_number **r = new big_number * [k + 1];
+
+    for (int i = 0; i < k + 1; i++)
+        r[i] = new big_number [result[i].power];
+
+
+    for (int i = 0; i <= k; k++){
+
+        big_number tmp = n / result[i].prime_number;
+
+        alpha[i] = g.pow(tmp, (*this));
+
+        assert(result[i].prime_number.m_len == 1);
+
+        for (unsigned int j = 0; j < result[i].prime_number.m_data[0]; j++) r[i][j] = alpha[i].pow(j, (*this));  // pow is not test
+    }
+
+    // step 2
+
+    big_number b;
+
+    int * x = new int [k + 1];
+
+    for (int i = 0; i <= k; i++){
+
+        big_number tmp2 = n/result[i].prime_number;
+
+        b = a.pow(tmp2, (*this));
+
+        int j;
+
+        for (j = 0; j < result[i].prime_number.m_data[0], r[i][j] != b; j++){}
+
+        assert(j < result[i].prime_number.m_data[0]);
+
+        x[i] = j;
+
+        for (int l = 1; l < result[i].power; l++){      // need to find inverse
+
+//            tmp2 =
+
+
+        }
+    }
 }
 
 int charToHex( char x ){
