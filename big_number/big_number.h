@@ -71,6 +71,8 @@ public:
 
     big_number operator * ( Base input_number ) const;
 
+    big_number operator * (const int & n) const;
+
     big_number operator ^ ( const int power ) const;
 
     big_number operator / ( const big_number & input_number ) const;
@@ -92,6 +94,8 @@ public:
     big_number operator >> (const int m) const;
 
     bool operator > ( const big_number & input_number ) const;
+
+    bool operator > ( const unsigned int a) const;
 
     bool operator < ( const big_number & input_number ) const;
 
@@ -146,6 +150,8 @@ public:
     void testfft();
 
     big_number sqrt () const;
+
+    big_number inverseNumberEuclid (const big_number & m) const;
 
     // factorization
 

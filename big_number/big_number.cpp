@@ -553,6 +553,16 @@ big_number big_number::operator *(Base input_number) const
 
 }
 
+big_number big_number::operator *(const int & n) const
+{
+    big_number input_number;
+    input_number.m_capacity = input_number.m_len = 1;
+    input_number.m_data = new Base[1];
+    input_number.m_data[0] = n;
+
+    return (*this * input_number);
+}
+
 big_number big_number::operator ^(const int power) const
 {
     big_number result = *this;
@@ -768,6 +778,12 @@ bool big_number::operator >(const big_number &input_number) const
             if (this->m_data[i] < input_number.m_data[i]) return false;
         }
 
+    return false;
+}
+
+bool big_number::operator >(const unsigned int a) const
+{
+    if ((m_len == 1) && m_data[0] > a) return true;
     return false;
 }
 
@@ -1488,6 +1504,28 @@ big_number big_number::sqrt() const
     return y;
 }
 
+big_number big_number::inverseNumberEuclid(const big_number & m) const
+{
+    big_number a0 = m, a1 = (*this), y0 = m, y1("0x1"), q, a2, y2, tmp;
+
+    while (a0%a1 != 0){
+
+        q = a0 / a1;
+        a2 = a0 - q * a1;
+        tmp = q * y1;
+        while (y0 < tmp)
+            y0 = y0 + m;
+        y2 = y0 - tmp;
+        a0 = a1;
+        y0 = y1;
+        a1 = a2;
+        y1 = y2;
+    }
+    assert(a2 > ZERO);
+
+    return y2;
+}
+
 int big_number::testDivisorMethod(const big_number &input_number, outTDM *result, bool &isFactorized)
 {
     big_number n = input_number, q, r, a;
@@ -1683,15 +1721,15 @@ big_number big_number::polygHellman(const big_number &g, const big_number &a) co
 
     // algorithm
 
-    big_number *alpha = new big_number[k];
+    big_number *alpha = new big_number[k + 1];
 
     big_number **r = new big_number * [k + 1];
 
-    for (int i = 0; i < k + 1; i++)
-        r[i] = new big_number [result[i].power];
+    for (int i = 0; i <= k; i++)
+        r[i] = new big_number [result[i].prime_number.m_data[0]];
 
 
-    for (int i = 0; i <= k; k++){
+    for (int i = 0; i <= k; i++){
 
         big_number tmp = n / result[i].prime_number;
 
@@ -1699,14 +1737,19 @@ big_number big_number::polygHellman(const big_number &g, const big_number &a) co
 
         assert(result[i].prime_number.m_len == 1);
 
-        for (unsigned int j = 0; j < result[i].prime_number.m_data[0]; j++) r[i][j] = alpha[i].pow(j, (*this));  // pow is not test
+        for (unsigned int j = 0; j < result[i].prime_number.m_data[0]; j++)
+            r[i][j] = alpha[i].pow(j, (*this));  // pow is not test
     }
 
     // step 2
 
     big_number b;
 
-    int * x = new int [k + 1];
+    int ** x = new int * [k + 1];
+    for (int i = 0; i <= k; i++)
+        x[i] = new int [result[i].power];
+
+//    int * x = new int [k + 1];
 
     for (int i = 0; i <= k; i++){
 
@@ -1714,21 +1757,29 @@ big_number big_number::polygHellman(const big_number &g, const big_number &a) co
 
         b = a.pow(tmp2, (*this));
 
-        int j;
+        unsigned int j;
 
-        for (j = 0; j < result[i].prime_number.m_data[0], r[i][j] != b; j++){}
+        for (j = 0; result[i].prime_number.m_data[0] > j, !(r[i][j] == b); j++){}
+        assert(result[i].prime_number.m_data[0] > j);
 
-        assert(j < result[i].prime_number.m_data[0]);
-
-        x[i] = j;
+        x[i][0] = j;
 
         for (int l = 1; l < result[i].power; l++){      // need to find inverse
+            big_number v = g.inverseNumberEuclid(*this);
+            v = v.pow(x[i][0], (*this));
+            b = v;
+            b = a*b;
+            big_number e = tmp2 / result[i].prime_number;
+            b = b.pow(e, (*this));
 
-//            tmp2 =
+            for (j = 0; result[i].prime_number.m_data[0] > j, !(r[i][j] == b); j++){}
+            assert(result[i].prime_number.m_data[0] > j);
 
-
+            x[i][l] = j;
         }
     }
+
+    return b;
 }
 
 int charToHex( char x ){

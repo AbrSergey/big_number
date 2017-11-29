@@ -27,26 +27,18 @@ void factorizationSiftingMethodFerma();
 
 int main(){
 
-    big_number m("101");
+//    factorizationMTD();
 
-    big_number g = m.primitiveRoot();
+    big_number m("0x65"), g("0x2"), a("0x3"), b;
 
-    cout << " g = ";
+    b = m.polygHellman(g, a);
 
-    g.printHex();
+//    big_number a ("0x1602a15e093"), m("0x24abe873c6473"), s;
 
+//    s = a.inverseNumberEuclid(m);
 
-
-//    for (int n = 0; n < 1; n++){
-
-//        big_number a = primeNumberGenerator(32);
-
-//        cout << "prime number " << n << " = ";
-
-//        a.printHex();
-
-//        cout << endl;
-//    }
+//    if (s * a % m != 1) cout << "Failed" << endl;
+//    else s.printHex();
 
     return 0;
 }
@@ -97,7 +89,7 @@ void factorizationSiftingMethodFerma(){
 
 void factorizationMTD(){
 
-    big_number x("25");
+    big_number x("100");
 
     outTDM *result = new outTDM[30];
 
