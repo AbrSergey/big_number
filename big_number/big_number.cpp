@@ -1745,11 +1745,11 @@ big_number big_number::polygHellman(const big_number &g, const big_number &a) co
 
     big_number b;
 
-    int ** x = new int * [k + 1];
-    for (int i = 0; i <= k; i++)
-        x[i] = new int [result[i].power];
+    big_number * x = new big_number [k + 1];
 
-//    int * x = new int [k + 1];
+    int y;
+
+    big_number * modules = new big_number  [k + 1];
 
     for (int i = 0; i <= k; i++){
 
@@ -1762,11 +1762,14 @@ big_number big_number::polygHellman(const big_number &g, const big_number &a) co
         for (j = 0; result[i].prime_number.m_data[0] > j, !(r[i][j] == b); j++){}
         assert(result[i].prime_number.m_data[0] > j);
 
-        x[i][0] = j;
+        y = j;
+        x[i] = y;
+
+        modules[i] = result[i].prime_number;
 
         for (int l = 1; l < result[i].power; l++){      // need to find inverse
             big_number v = g.inverseNumberEuclid(*this);
-            v = v.pow(x[i][0], (*this));
+            v = v.pow(y, (*this));
             b = v;
             b = a*b;
             big_number e = tmp2 / result[i].prime_number;
@@ -1775,11 +1778,31 @@ big_number big_number::polygHellman(const big_number &g, const big_number &a) co
             for (j = 0; result[i].prime_number.m_data[0] > j, !(r[i][j] == b); j++){}
             assert(result[i].prime_number.m_data[0] > j);
 
-            x[i][l] = j;
+            x[i] = x[i] + (modules[i] * j);
+
+            modules[i] = modules[i] *result[i].prime_number;
         }
     }
 
-    return b;
+    // step 3
+
+    big_number M = modules[0];
+
+    for (int i = 1; i <= k; i++) M = M * modules[i];
+
+    big_number * Mi = new big_number [k + 1];
+
+    for (int i = 0; i <= k; i++) Mi[i] = M / modules[i];
+
+    big_number * Minverse = new big_number [k + 1];
+
+    for (int i = 0; i <= k; i++) Minverse[i] = Mi[i].inverseNumberEuclid(modules[i]);
+
+    big_number output = ZERO;
+
+    for (int i = 0; i <=k; i++) output = output + x[i] * Mi[i] * Minverse[i] % M;
+
+    return output;
 }
 
 int charToHex( char x ){

@@ -29,9 +29,11 @@ int main(){
 
 //    factorizationMTD();
 
-    big_number m("0x65"), g("0x2"), a("0x3"), b;
+    big_number m("0x17"), g("0x5"), a("0x3"), b;
 
     b = m.polygHellman(g, a);
+
+    b.printHex();
 
 //    big_number a ("0x1602a15e093"), m("0x24abe873c6473"), s;
 
