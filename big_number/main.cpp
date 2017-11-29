@@ -29,7 +29,7 @@ int main(){
 
 //    factorizationMTD();
 
-    big_number m("0x17"), g("0x5"), a("0x3"), b;
+    big_number m("0x65"), g("0x2"), a("0x3"), b;
 
     b = m.polygHellman(g, a);
 

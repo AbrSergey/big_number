@@ -1731,9 +1731,7 @@ big_number big_number::polygHellman(const big_number &g, const big_number &a) co
 
     for (int i = 0; i <= k; i++){
 
-        big_number tmp = n / result[i].prime_number;
-
-        alpha[i] = g.pow(tmp, (*this));
+        alpha[i] = g.pow((n / result[i].prime_number), (*this));
 
         assert(result[i].prime_number.m_len == 1);
 
@@ -1744,63 +1742,49 @@ big_number big_number::polygHellman(const big_number &g, const big_number &a) co
     // step 2
 
     big_number b;
-
     big_number * x = new big_number [k + 1];
-
-    int y;
-
     big_number * modules = new big_number  [k + 1];
+    int y;
 
     for (int i = 0; i <= k; i++){
 
-        big_number tmp2 = n/result[i].prime_number;
+        big_number tmp = n/result[i].prime_number;
 
-        b = a.pow(tmp2, (*this));
+        b = a.pow(tmp, (*this));
 
         unsigned int j;
 
         for (j = 0; result[i].prime_number.m_data[0] > j, !(r[i][j] == b); j++){}
         assert(result[i].prime_number.m_data[0] > j);
 
-        y = j;
-        x[i] = y;
+        x[i] = y = j;
 
         modules[i] = result[i].prime_number;
 
-        for (int l = 1; l < result[i].power; l++){      // need to find inverse
-            big_number v = g.inverseNumberEuclid(*this);
-            v = v.pow(y, (*this));
-            b = v;
-            b = a*b;
-            big_number e = tmp2 / result[i].prime_number;
-            b = b.pow(e, (*this));
+        for (int l = 1; l < result[i].power; l++){
+
+            b = a * (g.inverseNumberEuclid(*this)).pow(y, (*this));
+            b = b.pow((tmp / result[i].prime_number), (*this));
 
             for (j = 0; result[i].prime_number.m_data[0] > j, !(r[i][j] == b); j++){}
             assert(result[i].prime_number.m_data[0] > j);
 
             x[i] = x[i] + (modules[i] * j);
-
             modules[i] = modules[i] *result[i].prime_number;
         }
     }
 
     // step 3
 
-    big_number M = modules[0];
-
-    for (int i = 1; i <= k; i++) M = M * modules[i];
-
     big_number * Mi = new big_number [k + 1];
-
-    for (int i = 0; i <= k; i++) Mi[i] = M / modules[i];
-
     big_number * Minverse = new big_number [k + 1];
-
-    for (int i = 0; i <= k; i++) Minverse[i] = Mi[i].inverseNumberEuclid(modules[i]);
-
     big_number output = ZERO;
 
-    for (int i = 0; i <=k; i++) output = output + x[i] * Mi[i] * Minverse[i] % M;
+    for (int i = 0; i <= k; i++){
+        Mi[i] = n / modules[i];
+        Minverse[i] = Mi[i].inverseNumberEuclid(modules[i]);
+        output = output + x[i] * Mi[i] * Minverse[i] % n;
+    }
 
     return output;
 }
