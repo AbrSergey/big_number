@@ -1506,6 +1506,8 @@ big_number big_number::sqrt() const
 
 big_number big_number::inverseNumberEuclid(const big_number & m) const
 {
+    if ((*this) == 1) return (*this);
+
     big_number a0 = m, a1 = (*this), y0 = m, y1("0x1"), q, a2, y2, tmp;
 
     while (a0%a1 != 0){
@@ -1664,60 +1666,49 @@ void big_number::siftingMethodFerma (const big_number & n, big_number & a, big_n
     }
 }
 
-big_number big_number::primitiveRoot() const
+big_number big_number::primitiveRoot(const int len, const outTDM * result) const
 {
     assert (m_len == 1);
 
-    assert ((*this).testMillerRabin(10));
+//    assert ((*this).testMillerRabin(10));
 
     big_number c = (*this) - 1;
 
-    bool isFactorized;
+    bool isRoot = false;
 
-    outTDM *result = new outTDM[30];
+    big_number g("0x2"); // ? or unsigned int ?
 
-    int len = c.testDivisorMethod(c, result, isFactorized);
+    while (g < c && !isRoot){
 
-    if (isFactorized){
+        for (int i = 0; i <= len; i++){
 
-        bool isRoot = false;
+            big_number y = c / result[i].prime_number;
+            big_number tmp = g.pow(y, (*this));
 
-        big_number g("0x2"); // ? or unsigned int ?
-
-        while (g < c && !isRoot){
-
-            for (int i = 0; i <= len; i++){
-
-                big_number y = c / result[i].prime_number;
-                big_number tmp = g.pow(y, (*this));
-
-                if (tmp == 1){
-                    isRoot = false;
-                    break;
-                }
-                isRoot = true;
+            if (tmp == 1){
+                isRoot = false;
+                break;
             }
-
-            if (isRoot) return g;
-            g = g + 1;
+            isRoot = true;
         }
-        throw std::logic_error("Have not found a primitive root!");
+
+        if (isRoot) return g;
+        g = g + 1;
     }
-    else
-        throw std::logic_error("Amazing error");
+    throw std::logic_error("Have not found a primitive root!");
 }
 
-big_number big_number::polygHellman(const big_number &g, const big_number &a) const
+big_number big_number::polygHellman(const big_number &g, const big_number &a, const int k, const outTDM * result) const
 {
-    // factorization n
+//    // factorization n
 
     big_number n = (*this) - 1;
 
-    bool isFactorized;
+//    bool isFactorized;
 
-    outTDM *result = new outTDM[30];
+//    outTDM *result = new outTDM[30];
 
-    int k = n.testDivisorMethod(n, result, isFactorized);
+//    int k = n.testDivisorMethod(n, result, isFactorized);
 
     // algorithm
 
@@ -1761,10 +1752,13 @@ big_number big_number::polygHellman(const big_number &g, const big_number &a) co
 
         modules[i] = result[i].prime_number;
 
+        big_number gInv = g.inverseNumberEuclid(*this);
+
         for (int l = 1; l < result[i].power; l++){
 
-            b = a * (g.inverseNumberEuclid(*this)).pow(y, (*this));
+            b = a * gInv.pow(y, (*this));
             b = b.pow((tmp / result[i].prime_number), (*this));
+            b = b % (*this);
 
             for (j = 0; result[i].prime_number.m_data[0] > j, !(r[i][j] == b); j++){}
             assert(result[i].prime_number.m_data[0] > j);

@@ -161,9 +161,9 @@ public:
 
     // logarithm
 
-    big_number primitiveRoot () const;
+    big_number primitiveRoot (const int len, const outTDM *result) const;
 
-    big_number polygHellman (const big_number & g, const big_number &a) const;
+    big_number polygHellman (const big_number &g, const big_number &a, const int k, const outTDM * result) const;
 };
 
 struct outTDM {

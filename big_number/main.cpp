@@ -24,25 +24,59 @@ void test_Bar_2();
 big_number primeNumberGenerator(unsigned int lenBits);
 void factorizationMTD();
 void factorizationSiftingMethodFerma();
+void discreteLogarithm (unsigned int len = 3);
 
 int main(){
 
-//    factorizationMTD();
-
-    big_number m("0x65"), g("0x2"), a("0x3"), b;
-
-    b = m.polygHellman(g, a);
-
-    b.printHex();
-
-//    big_number a ("0x1602a15e093"), m("0x24abe873c6473"), s;
-
-//    s = a.inverseNumberEuclid(m);
-
-//    if (s * a % m != 1) cout << "Failed" << endl;
-//    else s.printHex();
+    discreteLogarithm(25);
 
     return 0;
+}
+
+void discreteLogarithm(unsigned int len){
+
+    for (int i = 0; i < 5; i++)
+    {
+        big_number m = primeNumberGenerator(len);
+
+        // factorization m
+
+        bool isFactorized;
+
+        outTDM *result = new outTDM[30];
+
+        int k = (m-1).testDivisorMethod((m - 1), result, isFactorized);
+
+        // initialization
+
+        big_number g = m.primitiveRoot(k, result);
+
+        big_number a(len, FillTypeRandomBits), b;
+
+        a = a % m;
+        if (a == 0) break;
+
+
+        // start algorithm
+
+        b = m.polygHellman(g, a, k, result);
+
+        cout << "m = "; m.printHex();
+        cout << "g = "; g.printHex();
+        cout << "a = "; a.printHex();
+        cout << "b = "; b.printHex();
+
+
+        // testing
+
+        big_number test = g.pow(b, m);
+
+        if (test == a) cout << "True!" << endl;
+        else cout << "Failed!" << endl;
+
+        cout << "test = "; test.printHex();
+        cout << endl;
+    }
 }
 
 void factorizationSiftingMethodFerma(){
