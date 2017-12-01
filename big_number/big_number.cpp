@@ -1748,8 +1748,10 @@ big_number big_number::polygHellman(const big_number &g, const big_number &a, co
 
         for (int l = 1; l < result[i].power; l++){
 
+            tmp = tmp / result[i].prime_number;
+
             b = a * gInv.pow(x[i], (*this));
-            b = b.pow(tmp/result[i].prime_number, (*this));
+            b = b.pow(tmp, (*this));
             b = b % (*this);
 
             for (j = 0; result[i].prime_number.m_data[0] > j, !(r[i][j] == b); j++){}

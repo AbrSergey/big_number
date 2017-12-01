@@ -28,16 +28,20 @@ void discreteLogarithm (unsigned int len = 3);
 
 int main(){
 
-    discreteLogarithm(9);
+//    srand(time(0));
+
+    discreteLogarithm(24);
 
     return 0;
 }
 
 void discreteLogarithm(unsigned int len){
 
-    for (int i = 0; i < 5; i++)
+    for (int i = 0; i < 1; i++)
     {
         big_number m = primeNumberGenerator(len);
+
+//        big_number m("0x11");
 
         // factorization m
 
@@ -50,8 +54,10 @@ void discreteLogarithm(unsigned int len){
         // initialization
 
         big_number g = m.primitiveRoot(k, result);
+//        big_number g("0x3");
 
         big_number a(len, FillTypeRandomBits), res;
+//        big_number a("0x2"), res;
 
         a = a % m;
         if (a == 0) break;
