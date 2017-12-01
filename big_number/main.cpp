@@ -28,7 +28,7 @@ void discreteLogarithm (unsigned int len = 3);
 
 int main(){
 
-    discreteLogarithm(25);
+    discreteLogarithm(9);
 
     return 0;
 }
@@ -51,7 +51,7 @@ void discreteLogarithm(unsigned int len){
 
         big_number g = m.primitiveRoot(k, result);
 
-        big_number a(len, FillTypeRandomBits), b;
+        big_number a(len, FillTypeRandomBits), res;
 
         a = a % m;
         if (a == 0) break;
@@ -59,17 +59,17 @@ void discreteLogarithm(unsigned int len){
 
         // start algorithm
 
-        b = m.polygHellman(g, a, k, result);
+        res = m.polygHellman(g, a, k, result);
 
         cout << "m = "; m.printHex();
         cout << "g = "; g.printHex();
         cout << "a = "; a.printHex();
-        cout << "b = "; b.printHex();
+        cout << "res = "; res.printHex();
 
 
         // testing
 
-        big_number test = g.pow(b, m);
+        big_number test = g.pow(res, m);
 
         if (test == a) cout << "True!" << endl;
         else cout << "Failed!" << endl;

@@ -1700,15 +1700,7 @@ big_number big_number::primitiveRoot(const int len, const outTDM * result) const
 
 big_number big_number::polygHellman(const big_number &g, const big_number &a, const int k, const outTDM * result) const
 {
-//    // factorization n
-
     big_number n = (*this) - 1;
-
-//    bool isFactorized;
-
-//    outTDM *result = new outTDM[30];
-
-//    int k = n.testDivisorMethod(n, result, isFactorized);
 
     // algorithm
 
@@ -1727,7 +1719,7 @@ big_number big_number::polygHellman(const big_number &g, const big_number &a, co
         assert(result[i].prime_number.m_len == 1);
 
         for (unsigned int j = 0; j < result[i].prime_number.m_data[0]; j++)
-            r[i][j] = alpha[i].pow(j, (*this));  // pow is not test
+            r[i][j] = alpha[i].pow(j, (*this));
     }
 
     // step 2
@@ -1756,8 +1748,8 @@ big_number big_number::polygHellman(const big_number &g, const big_number &a, co
 
         for (int l = 1; l < result[i].power; l++){
 
-            b = a * gInv.pow(y, (*this));
-            b = b.pow((tmp / result[i].prime_number), (*this));
+            b = a * gInv.pow(x[i], (*this));
+            b = b.pow(tmp/result[i].prime_number, (*this));
             b = b % (*this);
 
             for (j = 0; result[i].prime_number.m_data[0] > j, !(r[i][j] == b); j++){}
