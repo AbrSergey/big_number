@@ -29,7 +29,7 @@ void discreteLogarithm ();
 
 int main(){
 
-    polynom a(33, FillTypeRandomPolynomPower);
+    polynom a(33);
 
     a.print();
 

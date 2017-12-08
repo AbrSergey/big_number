@@ -10,6 +10,60 @@ using namespace std;
 
 polynom::polynom() : m_data (NULL), m_len(0), m_capacity(0){}
 
+polynom::polynom(string str)
+{
+    int len = str.length();
+    int lenBase = len / (sizeof(Base) * 8);
+    int remainder = len % (sizeof(Base) * 8);
+
+    for (int i = 0; i < len; i++) assert(str[i] == '0' || str[i] == '1');
+
+    if (remainder == 0){
+
+        m_capacity = lenBase;
+        m_len = len;
+        m_data = new Base[lenBase];
+
+        for (int i = 0; i < lenBase; i++)
+            for (int j = 0; j < sizeof(Base)*4; j++){
+
+                int b;
+
+                if (str[i*sizeof(Base)*4 + j] == '1') b = 1;
+                else b = 0;
+
+                m_data[i] |= (b << j);
+            }
+    }
+    else{
+        lenBase++;
+        m_capacity = lenBase;
+        m_len = len;
+        m_data = new Base[lenBase];
+
+        for (int i = 0; i < lenBase - 1; i++)
+            for (int j = 0; j < sizeof(Base)*4; j++){
+
+                int b;
+
+                if (str[i*sizeof(Base)*4 + j] == '1') b = 1;
+                else b = 0;
+
+                m_data[i] |= (b << j);
+            }
+
+        for (int j = 0; j < remainder; j++){
+
+            int b;
+
+            if (str[(m_capacity - 1)*sizeof(Base)*4 + j] == '1') b = 1;
+            else b = 0;
+
+            m_data[m_capacity - 1] |= (b << j);
+        }
+    }
+}
+
 polynom::polynom(int quantityPower, FillTypePolynom filltype)
 {
     assert (quantityPower >= 0);

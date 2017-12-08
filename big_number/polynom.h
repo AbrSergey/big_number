@@ -24,7 +24,9 @@ private:
 public:
     polynom();
 
-    explicit polynom(int quantityPower, FillTypePolynom filltype = FillTypePolynomZero);
+    polynom( std::string str );
+
+    explicit polynom( int quantityPower, FillTypePolynom filltype = FillTypePolynomZero );
 
     void print();
 };
