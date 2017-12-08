@@ -878,7 +878,7 @@ big_number big_number::pow(const big_number &y, const big_number &mod) const
             q = q * q % mod;
             if ((y.m_data[i] >> j) & 1 == 1) z = (z * q) % mod;
         }
-    return z;
+    return (z % mod);
 }
 
 big_number big_number::pow(const int y, const big_number &mod) const
@@ -1704,22 +1704,22 @@ big_number big_number::polygHellman(const big_number &g, const big_number &a, co
 
     // algorithm
 
-    big_number *alpha = new big_number[k + 1];
+    for (int i = 0; i <= k; i++) assert(result[i].prime_number.m_len == 1);
+
+    big_number alpha;
 
     big_number **r = new big_number * [k + 1];
 
     for (int i = 0; i <= k; i++)
         r[i] = new big_number [result[i].prime_number.m_data[0]];
 
-
     for (int i = 0; i <= k; i++){
 
-        alpha[i] = g.pow((n / result[i].prime_number), (*this));
+        alpha = g.pow((n / result[i].prime_number), (*this));
 
-        assert(result[i].prime_number.m_len == 1);
-
-        for (unsigned int j = 0; j < result[i].prime_number.m_data[0]; j++)
-            r[i][j] = alpha[i].pow(j, (*this));
+        r[i][0] = 1;
+        for (unsigned int j = 1; j < result[i].prime_number.m_data[0]; j++)
+            r[i][j] = (r[i][j - 1] * alpha) % (*this);
     }
 
     // step 2
@@ -1727,7 +1727,7 @@ big_number big_number::polygHellman(const big_number &g, const big_number &a, co
     big_number b;
     big_number * x = new big_number [k + 1];
     big_number * modules = new big_number  [k + 1];
-    int y;
+    big_number gInv = g.inverseNumberEuclid(*this);
 
     for (int i = 0; i <= k; i++){
 
@@ -1738,13 +1738,10 @@ big_number big_number::polygHellman(const big_number &g, const big_number &a, co
         unsigned int j;
 
         for (j = 0; result[i].prime_number.m_data[0] > j, !(r[i][j] == b); j++){}
-        assert(result[i].prime_number.m_data[0] > j);
 
-        x[i] = y = j;
+        x[i] = j;
 
         modules[i] = result[i].prime_number;
-
-        big_number gInv = g.inverseNumberEuclid(*this);
 
         for (int l = 1; l < result[i].power; l++){
 
@@ -1752,26 +1749,24 @@ big_number big_number::polygHellman(const big_number &g, const big_number &a, co
 
             b = a * gInv.pow(x[i], (*this));
             b = b.pow(tmp, (*this));
-            b = b % (*this);
 
             for (j = 0; result[i].prime_number.m_data[0] > j, !(r[i][j] == b); j++){}
-            assert(result[i].prime_number.m_data[0] > j);
 
             x[i] = x[i] + (modules[i] * j);
-            modules[i] = modules[i] *result[i].prime_number;
+            modules[i] = modules[i] * result[i].prime_number;
         }
     }
 
     // step 3
 
-    big_number * Mi = new big_number [k + 1];
-    big_number * Minverse = new big_number [k + 1];
+    big_number Mi;
+    big_number Minverse;
     big_number output = ZERO;
 
     for (int i = 0; i <= k; i++){
-        Mi[i] = n / modules[i];
-        Minverse[i] = Mi[i].inverseNumberEuclid(modules[i]);
-        output = output + x[i] * Mi[i] * Minverse[i] % n;
+        Mi = n / modules[i];
+        Minverse = Mi.inverseNumberEuclid(modules[i]);
+        output = output + x[i] * Mi * Minverse % n;
     }
 
     return output;

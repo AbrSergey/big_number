@@ -24,24 +24,22 @@ void test_Bar_2();
 big_number primeNumberGenerator(unsigned int lenBits);
 void factorizationMTD();
 void factorizationSiftingMethodFerma();
-void discreteLogarithm (unsigned int len = 3);
+void discreteLogarithm ();
 
 int main(){
 
-//    srand(time(0));
-
-    discreteLogarithm(24);
+    cout << sizeof(int);
 
     return 0;
 }
 
-void discreteLogarithm(unsigned int len){
+void discreteLogarithm(){
 
-    for (int i = 0; i < 1; i++)
+    unsigned int len;
+
+    for (int len = 30; len < 32; len++)
     {
         big_number m = primeNumberGenerator(len);
-
-//        big_number m("0x11");
 
         // factorization m
 
@@ -53,35 +51,39 @@ void discreteLogarithm(unsigned int len){
 
         // initialization
 
-        big_number g = m.primitiveRoot(k, result);
-//        big_number g("0x3");
+        big_number g = m.primitiveRoot(k, result), b, res;
 
-        big_number a(len, FillTypeRandomBits), res;
-//        big_number a("0x2"), res;
+        do{
+            big_number a(len, FillTypeRandomBits);
 
-        a = a % m;
-        if (a == 0) break;
+            a = a % m;
 
-
-        // start algorithm
-
-        res = m.polygHellman(g, a, k, result);
-
-        cout << "m = "; m.printHex();
-        cout << "g = "; g.printHex();
-        cout << "a = "; a.printHex();
-        cout << "res = "; res.printHex();
+            if (a == 0) break;
 
 
-        // testing
+            // start algorithm
 
-        big_number test = g.pow(res, m);
+            res = m.polygHellman(g, a, k, result);
 
-        if (test == a) cout << "True!" << endl;
-        else cout << "Failed!" << endl;
+            cout << "m = "; m.printHex();
+            cout << "g = "; g.printHex();
+            cout << "a = "; a.printHex();
+            cout << "res = "; res.printHex();
 
-        cout << "test = "; test.printHex();
-        cout << endl;
+
+            // testing
+
+            big_number test = g.pow(res, m);
+
+            if (test == a) cout << "True!" << endl;
+            else cout << "Failed!" << endl;
+
+            cout << "test = "; test.printHex();
+            cout << endl;
+
+            b = a;
+        }
+        while (b == 0);
     }
 }
 
