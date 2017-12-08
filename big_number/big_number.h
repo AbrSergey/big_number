@@ -24,7 +24,6 @@ enum FillType{
 };
 
 
-
 class big_number
 {
 private:

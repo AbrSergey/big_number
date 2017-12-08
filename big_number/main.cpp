@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string>
 #include "big_number.h"
+#include "polynom.h"
 #include <fstream>
 #include <sstream>
 #include <ctime>
@@ -28,7 +29,11 @@ void discreteLogarithm ();
 
 int main(){
 
-    cout << sizeof(int);
+    polynom a(33, FillTypeRandomPolynomPower);
+
+    a.print();
+
+    int b = 0;
 
     return 0;
 }
@@ -37,7 +42,7 @@ void discreteLogarithm(){
 
     unsigned int len;
 
-    for (int len = 30; len < 32; len++)
+    for (int len = 10; len < 16; len++)
     {
         big_number m = primeNumberGenerator(len);
 
