@@ -29,18 +29,24 @@ void discreteLogarithm ();
 
 int main(){
 
-    polynom a(33);
+    polynom a("111");
+
+    polynom b("100100");
+
+    polynom c;
+
+    c = a * b;
 
     a.print();
 
-    int b = 0;
+    b.print();
+
+    c.print();
 
     return 0;
 }
 
 void discreteLogarithm(){
-
-    unsigned int len;
 
     for (int len = 10; len < 16; len++)
     {
@@ -175,8 +181,6 @@ big_number primeNumberGenerator(unsigned int lenBits)
         if (result) return a;
     }
     while (!result);
-
-
 }
 
 void test_Bar_1(){

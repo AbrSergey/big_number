@@ -28,7 +28,17 @@ public:
 
     explicit polynom( int quantityPower, FillTypePolynom filltype = FillTypePolynomZero );
 
+    polynom operator + ( const polynom & inputPolynom ) const;
+
+    polynom operator * ( const polynom & inputPolynom ) const;
+
+    polynom &operator = ( const polynom & inputPolynom );
+
     void print();
+
+    int coefficient(int number) const;
+
+    void checkLength();
 };
 
 #endif // POLYNOM_H
