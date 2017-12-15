@@ -26,19 +26,27 @@ public:
 
     polynom( std::string str );
 
+    polynom (const polynom & numberPolynom);
+
     explicit polynom( int quantityPower, FillTypePolynom filltype = FillTypePolynomZero );
 
     polynom operator + ( const polynom & inputPolynom ) const;
 
     polynom operator * ( const polynom & inputPolynom ) const;
 
+    polynom operator ^ ( const polynom & inputPolynom ) const;
+
     polynom &operator = ( const polynom & inputPolynom );
+
+    polynom operator << ( const int q ) const;
 
     void print();
 
     int coefficient(int number) const;
 
     void checkLength();
+
+    int lenBase();
 };
 
 #endif // POLYNOM_H

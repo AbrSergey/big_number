@@ -68,6 +68,19 @@ polynom::polynom(string str)
     }
 }
 
+polynom::polynom(const polynom &numberPolynom)
+{
+    m_capacity = numberPolynom.m_capacity;
+
+    m_len = numberPolynom.m_len;
+
+    m_data = new Base[m_capacity];
+
+    for (int i = 0; i < m_capacity; i++ )
+
+        m_data[i] = numberPolynom.m_data[i];
+}
+
 polynom::polynom(int quantityPower, FillTypePolynom filltype)
 {
     assert (quantityPower >= 0);
@@ -166,6 +179,15 @@ polynom polynom::operator *(const polynom &inputPolynom) const
     result.m_data = new Base[capRes];
     result.m_len = lenRes;
 
+    polynom tmp = inputPolynom;
+
+    for (int i = 0; i < m_len; i++){
+        if (this->coefficient(i) == 1){
+            tmp = inputPolynom << i;
+            result = result ^ tmp;
+        }
+    }
+
     for (int i = 0; i < m_len; i++){
         if (this->coefficient(i) == 1)
             for (int j = 0; j < inputPolynom.m_len; j++)
@@ -180,6 +202,26 @@ polynom polynom::operator *(const polynom &inputPolynom) const
     }
 
     result.checkLength();
+
+    return result;
+}
+
+polynom polynom::operator ^(const polynom &inputPolynom) const
+{
+    int minCap = min(m_capacity, inputPolynom.m_capacity);
+    int maxCap = max(m_capacity, inputPolynom.m_capacity);
+
+    polynom result;
+    result.m_capacity = maxCap;
+    result.m_data = new Base[maxCap];
+    result.m_len = max(m_len, inputPolynom.m_len);
+
+    for (int i = 0; i < minCap; i++) result.m_data[i] = m_data[i] ^ inputPolynom.m_data[i];
+
+    if (m_capacity > inputPolynom.m_capacity)
+        for (int i = minCap; i < maxCap; i++) result.m_data[i] = m_data[i];
+    else
+        for (int i = minCap; i < maxCap; i++) result.m_data[i] = inputPolynom.m_data[i];
 
     return result;
 }
@@ -206,6 +248,61 @@ polynom &polynom::operator =(const polynom &inputPolynom)
         m_data[i] = inputPolynom.m_data[i];
 
     return *this;
+}
+
+polynom polynom::operator <<(const int q) const
+{
+    int len = m_len + q;
+    int whole = len / (sizeof(Base) * 8);
+
+    if ((len % (sizeof(Base) * 8))!= 0) whole++;
+
+    polynom tmp;
+
+    if (m_capacity < whole){
+        tmp.m_capacity = whole;
+        tmp.m_data = new Base[whole];
+    }
+    else{
+        tmp.m_capacity = m_capacity;
+        tmp.m_data = new Base[m_capacity];
+    }
+
+    tmp = *this;
+
+    int fullBase = q / (sizeof(Base) * 8);
+
+    for (int i = tmp.lenBase(); i > 0; i--)
+        tmp.m_data[fullBase + i - 1] = tmp.m_data[i - 1];
+
+    for (int i = 0; i < fullBase; i++) tmp.m_data[i] = 0;
+
+    int r = q % (sizeof(Base) * 8);
+    unsigned int mask = 1;
+
+    for (int i = 1; i < r; i++) mask |= (1 << i);
+
+    int shift = (sizeof(Base) * 8) - r;
+    mask <<= shift;
+
+    unsigned int test = tmp.m_data[tmp.lenBase() - 1] & mask;
+
+    if (test != 0){
+        for (int i = tmp.lenBase(); i > 0; i--){
+            tmp.m_data[i] = (test >> shift);
+            tmp.m_data[i - 1] <<= r;
+            test = tmp.m_data[i - 1] & mask;
+        }
+    }
+    else {
+        for (int i = tmp.lenBase(); i >= 0; i--){
+            tmp.m_data[i] <<= r;
+        }
+    }
+
+    tmp.m_len = len;
+
+    return tmp;
 }
 
 void polynom::print()
@@ -277,4 +374,13 @@ void polynom::checkLength()
     }
 
     return;
+}
+
+int polynom::lenBase()
+{
+    int whole = m_len / (sizeof(Base) * 8);
+
+    if ((m_len % (sizeof(Base) * 8)) != 0) whole++;
+
+    return whole;
 }
