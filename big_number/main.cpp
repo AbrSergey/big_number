@@ -29,22 +29,19 @@ void discreteLogarithm ();
 
 int main(){
 
-    polynom a("101");
+    polynom a("101011");
 
-    polynom b("110001");
+    polynom b("11001");
 
     polynom c;
 
-    c = a * b;
-
-//    a * b;
+    c = a.gcd(b);
 
     a.print();
 
     b.print();
 
     c.print();
-
 
     return 0;
 }

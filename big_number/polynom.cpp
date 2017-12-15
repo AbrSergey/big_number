@@ -181,50 +181,54 @@ polynom polynom::operator *(const polynom &inputPolynom) const
 
     polynom tmp = inputPolynom;
 
-    for (int i = 0; i < m_len; i++){
+    for (int i = 0; i < m_len; i++)
         if (this->coefficient(i) == 1){
             tmp = inputPolynom << i;
-            result = result ^ tmp;
+            result = result + tmp;
         }
-    }
-
-    for (int i = 0; i < m_len; i++){
-        if (this->coefficient(i) == 1)
-            for (int j = 0; j < inputPolynom.m_len; j++)
-                if (inputPolynom.coefficient(j) == 1){
-
-                    int whole = (i + j) / (sizeof(Base) * 8);
-                    int remainder = (i + j) % (sizeof(Base) * 8);
-                    int b = 1 << remainder;
-
-                    result.m_data[whole] ^= b;
-                }
-    }
 
     result.checkLength();
 
     return result;
 }
 
-polynom polynom::operator ^(const polynom &inputPolynom) const
+polynom polynom::operator /(const polynom &inputPolynom) const
 {
-    int minCap = min(m_capacity, inputPolynom.m_capacity);
-    int maxCap = max(m_capacity, inputPolynom.m_capacity);
+    polynom whole, remainder;
 
-    polynom result;
-    result.m_capacity = maxCap;
-    result.m_data = new Base[maxCap];
-    result.m_len = max(m_len, inputPolynom.m_len);
+    division(inputPolynom, whole, remainder);
 
-    for (int i = 0; i < minCap; i++) result.m_data[i] = m_data[i] ^ inputPolynom.m_data[i];
-
-    if (m_capacity > inputPolynom.m_capacity)
-        for (int i = minCap; i < maxCap; i++) result.m_data[i] = m_data[i];
-    else
-        for (int i = minCap; i < maxCap; i++) result.m_data[i] = inputPolynom.m_data[i];
-
-    return result;
+    return whole;
 }
+
+polynom polynom::operator %(const polynom &inputPolynom) const
+{
+    polynom whole, remainder;
+
+    division(inputPolynom, whole, remainder);
+
+    return remainder;
+}
+
+//polynom polynom::operator ^(const polynom &inputPolynom) const
+//{
+//    int minCap = min(m_capacity, inputPolynom.m_capacity);
+//    int maxCap = max(m_capacity, inputPolynom.m_capacity);
+
+//    polynom result;
+//    result.m_capacity = maxCap;
+//    result.m_data = new Base[maxCap];
+//    result.m_len = max(m_len, inputPolynom.m_len);
+
+//    for (int i = 0; i < minCap; i++) result.m_data[i] = m_data[i] ^ inputPolynom.m_data[i];
+
+//    if (m_capacity > inputPolynom.m_capacity)
+//        for (int i = minCap; i < maxCap; i++) result.m_data[i] = m_data[i];
+//    else
+//        for (int i = minCap; i < maxCap; i++) result.m_data[i] = inputPolynom.m_data[i];
+
+//    return result;
+//}
 
 polynom &polynom::operator =(const polynom &inputPolynom)
 {
@@ -233,6 +237,8 @@ polynom &polynom::operator =(const polynom &inputPolynom)
     int capacity = m_len / (sizeof(Base) * 8);
 
     if ((m_len % (sizeof(Base) * 8)) != 0) capacity++;
+    else
+        if(capacity == 0 && (m_len % (sizeof(Base) * 8)) == 0) capacity++;
 
     if (m_capacity < capacity){
 
@@ -243,7 +249,7 @@ polynom &polynom::operator =(const polynom &inputPolynom)
         m_capacity = capacity;
     }
 
-    for (int i = 0; i < capacity; i++)
+    for (int i = 0; i < capacity && i < inputPolynom.m_capacity; i++)
 
         m_data[i] = inputPolynom.m_data[i];
 
@@ -303,6 +309,75 @@ polynom polynom::operator <<(const int q) const
     tmp.m_len = len;
 
     return tmp;
+}
+
+bool polynom::operator ==(const int inputNumber) const
+{
+    assert (inputNumber == 0);
+
+    if (this->m_capacity == 1 && this->m_len == 0) return true;
+
+    return false;
+}
+
+polynom polynom::gcd(const polynom inputPolynom) const
+{
+    polynom f, g, r, q;
+
+    if (this->m_len >= inputPolynom.m_len){
+        f = *this;
+        g = inputPolynom;
+    }
+    else{
+        f = inputPolynom;
+        g = *this;
+    }
+
+    polynom res = g;
+
+    r = f % g;
+
+    q = g;
+
+    while (!(r == false)){
+
+        res = g;
+
+        q = f / g;
+
+        r = f % g;
+
+        f = g;
+
+        g = r;
+    }
+
+    return res;
+}
+
+void polynom::division(const polynom &inputPolynom, polynom &whole, polynom &remainder) const
+{
+    assert(m_len >= inputPolynom.m_len);
+
+    polynom tmp = inputPolynom; //делитель
+
+    whole.m_capacity = m_capacity;
+    whole.m_data = new Base[m_capacity];
+
+    remainder = *this; //остаток
+
+    do{
+        int l = remainder.m_len - inputPolynom.m_len;
+
+        whole.m_data[l / (sizeof(Base) * 8)] ^= 1 << l;
+        whole.checkLength();
+
+        tmp = inputPolynom << l;
+        remainder = remainder + tmp;
+    }
+    while(remainder.m_len >= inputPolynom.m_len);
+
+    remainder.checkLength();
 }
 
 void polynom::print()

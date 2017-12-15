@@ -34,11 +34,21 @@ public:
 
     polynom operator * ( const polynom & inputPolynom ) const;
 
-    polynom operator ^ ( const polynom & inputPolynom ) const;
+    polynom operator / ( const polynom & inputPolynom ) const;
+
+    polynom operator % ( const polynom & inputPolynom ) const;
+
+//    polynom operator ^ ( const polynom & inputPolynom ) const;
 
     polynom &operator = ( const polynom & inputPolynom );
 
     polynom operator << ( const int q ) const;
+
+    bool operator ==( const int inputNumber ) const;
+
+    polynom gcd (const polynom inputPolynom) const;
+
+    void division (const polynom & inputPolynom, polynom & whole, polynom & remainder) const;
 
     void print();
 
