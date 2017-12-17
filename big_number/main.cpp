@@ -29,19 +29,10 @@ void discreteLogarithm ();
 
 int main(){
 
-    polynom a("101011");
+    polynom a("10011");
 
-    polynom b("11001");
-
-    polynom c;
-
-    c = a.gcd(b);
-
-    a.print();
-
-    b.print();
-
-    c.print();
+    if (a.reducability() == true) cout << "true" << endl;
+    else cout << "false" << endl;
 
     return 0;
 }

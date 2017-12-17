@@ -205,6 +205,8 @@ polynom polynom::operator %(const polynom &inputPolynom) const
 {
     polynom whole, remainder;
 
+    if ((*this).m_len < inputPolynom.m_len) return (*this);
+
     division(inputPolynom, whole, remainder);
 
     return remainder;
@@ -320,6 +322,15 @@ bool polynom::operator ==(const int inputNumber) const
     return false;
 }
 
+bool polynom::operator !=(const int numberOne) const
+{
+    assert (numberOne == 1);
+
+    if ((*this).m_len == 1 && (*this).m_data[0] == 1) return false;
+
+    return true;
+}
+
 polynom polynom::gcd(const polynom inputPolynom) const
 {
     polynom f, g, r, q;
@@ -353,6 +364,30 @@ polynom polynom::gcd(const polynom inputPolynom) const
     }
 
     return res;
+}
+
+bool polynom::reducability() const
+{
+    polynom u("10");
+
+    int l = ((*this).power() / 2);
+
+    for (int i = 0; i < l; i++){
+
+        u = (u * u) % (*this);
+
+        polynom tmp = u;
+
+        tmp.m_data[0] ^= 2;
+
+        tmp.checkLength();
+
+        polynom d = (*this).gcd(tmp);
+
+        if (d != 1) return true;
+    }
+
+    return false;
 }
 
 void polynom::division(const polynom &inputPolynom, polynom &whole, polynom &remainder) const
@@ -458,4 +493,9 @@ int polynom::lenBase()
     if ((m_len % (sizeof(Base) * 8)) != 0) whole++;
 
     return whole;
+}
+
+int polynom::power() const
+{
+    return m_len - 1;
 }

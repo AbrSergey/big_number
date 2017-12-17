@@ -46,7 +46,11 @@ public:
 
     bool operator ==( const int inputNumber ) const;
 
+    bool operator != (const int numberOne) const;
+
     polynom gcd (const polynom inputPolynom) const;
+
+    bool reducability () const;
 
     void division (const polynom & inputPolynom, polynom & whole, polynom & remainder) const;
 
@@ -57,6 +61,8 @@ public:
     void checkLength();
 
     int lenBase();
+
+    int power () const;
 };
 
 #endif // POLYNOM_H
