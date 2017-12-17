@@ -1375,6 +1375,11 @@ int big_number::len() const
     return m_len;
 }
 
+unsigned int big_number::data(const int i) const
+{
+    return m_data[i];
+}
+
 big_number big_number::zComp()
 {
     big_number z(2*m_len + 1);

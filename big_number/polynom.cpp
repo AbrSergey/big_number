@@ -5,6 +5,7 @@
 #include <string>
 #include <cstring>
 #include <algorithm>
+#include "big_number.h"
 #include "assert.h"
 
 using namespace std;
@@ -370,7 +371,7 @@ bool polynom::reducability() const
 {
     polynom u("10");
 
-    int l = ((*this).power() / 2);
+    int l = (*this).power() / 2;
 
     for (int i = 0; i < l; i++){
 
@@ -388,6 +389,38 @@ bool polynom::reducability() const
     }
 
     return false;
+}
+
+bool polynom::primitive() const
+{
+    int power = (*this).power();
+
+    assert (0 < power && power < 32);
+
+    int p = (1 << power) - 1;
+    big_number x;
+    x = p;
+
+    outTDM *factorization = new outTDM[30];
+    int lenFactorization;
+    bool isFactorized;
+    lenFactorization = x.testDivisorMethod(x, factorization, isFactorized);
+
+    for (int i = 0; i <= lenFactorization; i++){
+
+        big_number tmp = x / factorization[i].prime_number;
+
+        assert(tmp.len() == 1);
+
+        polynom r("1");
+
+        r = r << tmp.data(0);
+
+        r = r % (*this);
+
+        if (!(r != 1)) return false;
+    }
+    return true;
 }
 
 void polynom::division(const polynom &inputPolynom, polynom &whole, polynom &remainder) const

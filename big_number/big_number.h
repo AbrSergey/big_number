@@ -138,6 +138,8 @@ public:
 
     int len() const;
 
+    unsigned int data (const int i) const;
+
     big_number zComp ();
 
     unsigned int zeroCount (); // need to test

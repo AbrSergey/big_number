@@ -52,6 +52,8 @@ public:
 
     bool reducability () const;
 
+    bool primitive () const;
+
     void division (const polynom & inputPolynom, polynom & whole, polynom & remainder) const;
 
     void print();

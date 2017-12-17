@@ -31,7 +31,7 @@ int main(){
 
     polynom a("10011");
 
-    if (a.reducability() == true) cout << "true" << endl;
+    if (a.primitive() == true) cout << "true" << endl;
     else cout << "false" << endl;
 
     return 0;
