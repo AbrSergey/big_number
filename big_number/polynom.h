@@ -1,6 +1,7 @@
 #ifndef POLYNOM_H
 #define POLYNOM_H
 #include <string>
+#include "big_number.h"
 
 typedef unsigned int Base;
 
@@ -65,6 +66,8 @@ public:
     int lenBase();
 
     int power () const;
+
+    polynom pow (const big_number & y, const polynom &mod );
 };
 
 #endif // POLYNOM_H

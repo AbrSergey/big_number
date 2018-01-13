@@ -29,10 +29,21 @@ void discreteLogarithm ();
 
 int main(){
 
-    polynom a("10011");
+//    polynom a("1000000000000000000000000100000000001");
+//    polynom a("1000000000000000000000000000000000010001");
+//    polynom a("100000000101");
+//    polynom a("1000000000000000000010000000000001");
+//    polynom a("10000000000000000000000001001");
+    polynom a("1000000000000000000000000100000000001");
 
-    if (a.primitive() == true) cout << "true" << endl;
-    else cout << "false" << endl;
+    cout << "Reducability -> ";
+    if (a.reducability() == true) cout << "true" << endl;
+    else{
+        cout << " false" << endl;
+        cout << "Primitive -> ";
+        if (a.primitive() == true) cout << "true" << endl;
+        else cout << "false" << endl;
+    }
 
     return 0;
 }

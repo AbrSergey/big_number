@@ -140,6 +140,8 @@ public:
 
     unsigned int data (const int i) const;
 
+    void insertData (const int x, int d);
+
     big_number zComp ();
 
     unsigned int zeroCount (); // need to test

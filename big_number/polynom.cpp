@@ -171,6 +171,18 @@ polynom polynom::operator +(const polynom &inputPolynom) const
 
 polynom polynom::operator *(const polynom &inputPolynom) const
 {
+    if ((*this).m_len == 0 && (*this).m_data[0] == 0 &&
+            inputPolynom.m_len == 0 && inputPolynom.m_data[0] == 0){
+
+        polynom result;
+        result.m_capacity = 1;
+        result.m_data = new Base[result.m_capacity];
+        result.m_data[0] = 0;
+        result.m_len = 0;
+
+        return result;
+    }
+
     int lenRes = m_len + inputPolynom.m_len;
     int capRes = lenRes / (sizeof(Base) * 8);
     if (m_len % (sizeof(Base) * 8) != 0) capRes++;
@@ -203,7 +215,7 @@ polynom polynom::operator /(const polynom &inputPolynom) const
 }
 
 polynom polynom::operator %(const polynom &inputPolynom) const
-{
+{   
     polynom whole, remainder;
 
     if ((*this).m_len < inputPolynom.m_len) return (*this);
@@ -235,6 +247,8 @@ polynom polynom::operator %(const polynom &inputPolynom) const
 
 polynom &polynom::operator =(const polynom &inputPolynom)
 {
+    for (int i = 0; i < m_capacity; i++) m_data[i] = 0;
+
     m_len = inputPolynom.m_len;
 
     int capacity = m_len / (sizeof(Base) * 8);
@@ -294,9 +308,11 @@ polynom polynom::operator <<(const int q) const
     int shift = (sizeof(Base) * 8) - r;
     mask <<= shift;
 
+    tmp.checkLength(); //?
+
     unsigned int test = tmp.m_data[tmp.lenBase() - 1] & mask;
 
-    if (test != 0){
+    if (test != 0 && r > 0){
         for (int i = tmp.lenBase(); i > 0; i--){
             tmp.m_data[i] = (test >> shift);
             tmp.m_data[i - 1] <<= r;
@@ -351,7 +367,7 @@ polynom polynom::gcd(const polynom inputPolynom) const
 
     q = g;
 
-    while (!(r == false)){
+    while (!(r.m_len == 0 && r.m_data[0] == 0)){
 
         res = g;
 
@@ -395,11 +411,15 @@ bool polynom::primitive() const
 {
     int power = (*this).power();
 
-    assert (0 < power && power < 32);
+//    assert (0 < power && power < 32);
 
-    int p = (1 << power) - 1;
-    big_number x;
-    x = p;
+    int whole = power / 32;
+    int rem = power % 32;
+
+    big_number x(whole + 1);
+    int p = 1 << rem;
+    x.insertData(p, whole);
+    x = x - 1;
 
     outTDM *factorization = new outTDM[30];
     int lenFactorization;
@@ -410,13 +430,13 @@ bool polynom::primitive() const
 
         big_number tmp = x / factorization[i].prime_number;
 
-        assert(tmp.len() == 1);
-
         polynom r("1");
 
-        r = r << tmp.data(0);
+//        r = r << tmp.data(0);
 
-        r = r % (*this);
+//        r = r % (*this);
+
+        r = r.pow(tmp, (*this));
 
         if (!(r != 1)) return false;
     }
@@ -531,4 +551,27 @@ int polynom::lenBase()
 int polynom::power() const
 {
     return m_len - 1;
+}
+
+polynom polynom::pow(const big_number &y, const polynom &mod)
+{
+    // declaration
+    polynom z, q = *this;
+
+    // step 1
+
+    Base u = 1;
+    if ((u & 1) == 0) z.m_data[0] = 1;
+
+    else z = *this;
+
+    // step 2
+
+    for (int i = 0; i < (*this).lenBase(); i++)
+        for (unsigned int j = 0; j < 8*sizeof(Base); j++){
+
+            q = (q << 2) % mod;
+            if ((y.data(i) >> j) & 1 == 1) z = (z << 1) % mod;
+        }
+    return (z % mod);
 }

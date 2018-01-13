@@ -1380,6 +1380,15 @@ unsigned int big_number::data(const int i) const
     return m_data[i];
 }
 
+void big_number::insertData(const int x, int d)
+{
+    m_data[d] = x;
+    m_len = m_capacity;
+    (*this).checkLength();
+
+    return;
+}
+
 big_number big_number::zComp()
 {
     big_number z(2*m_len + 1);
@@ -1534,7 +1543,7 @@ big_number big_number::inverseNumberEuclid(const big_number & m) const
 }
 
 int big_number::testDivisorMethod(const big_number &input_number, outTDM *result, bool &isFactorized)
-{
+{   
     big_number n = input_number, q, r, a;
 
     int k = 0, lenD = 0;
