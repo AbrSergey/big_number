@@ -225,26 +225,6 @@ polynom polynom::operator %(const polynom &inputPolynom) const
     return remainder;
 }
 
-//polynom polynom::operator ^(const polynom &inputPolynom) const
-//{
-//    int minCap = min(m_capacity, inputPolynom.m_capacity);
-//    int maxCap = max(m_capacity, inputPolynom.m_capacity);
-
-//    polynom result;
-//    result.m_capacity = maxCap;
-//    result.m_data = new Base[maxCap];
-//    result.m_len = max(m_len, inputPolynom.m_len);
-
-//    for (int i = 0; i < minCap; i++) result.m_data[i] = m_data[i] ^ inputPolynom.m_data[i];
-
-//    if (m_capacity > inputPolynom.m_capacity)
-//        for (int i = minCap; i < maxCap; i++) result.m_data[i] = m_data[i];
-//    else
-//        for (int i = minCap; i < maxCap; i++) result.m_data[i] = inputPolynom.m_data[i];
-
-//    return result;
-//}
-
 polynom &polynom::operator =(const polynom &inputPolynom)
 {
     for (int i = 0; i < m_capacity; i++) m_data[i] = 0;
@@ -308,21 +288,14 @@ polynom polynom::operator <<(const int q) const
     int shift = (sizeof(Base) * 8) - r;
     mask <<= shift;
 
-    tmp.checkLength(); //?
+    tmp.checkLength();
 
-    unsigned int test = tmp.m_data[tmp.lenBase() - 1] & mask;
+    unsigned int test;
 
-    if (test != 0 && r > 0){
-        for (int i = tmp.lenBase(); i > 0; i--){
-            tmp.m_data[i] = (test >> shift);
-            tmp.m_data[i - 1] <<= r;
-            test = tmp.m_data[i - 1] & mask;
-        }
-    }
-    else {
-        for (int i = tmp.lenBase(); i >= 0; i--){
-            tmp.m_data[i] <<= r;
-        }
+    for (int i = tmp.lenBase(); i > 0; i--){
+        test = tmp.m_data[i - 1] & mask;
+        tmp.m_data[i] ^= (test >> shift);
+        tmp.m_data[i - 1] <<= r;
     }
 
     tmp.m_len = len;
@@ -386,12 +359,17 @@ polynom polynom::gcd(const polynom inputPolynom) const
 bool polynom::reducability() const
 {
     polynom u("10");
+    polynom uu("10");
 
     int l = (*this).power() / 2;
 
     for (int i = 0; i < l; i++){
 
         u = (u * u) % (*this);
+
+//        big_number rr("2");
+//        uu = uu.pow(rr, (*this));
+
 
         polynom tmp = u;
 
