@@ -69,6 +69,34 @@ polynom::polynom(string str)
     }
 }
 
+polynom::polynom(int arr[], int len)
+{
+    int max = arr[len - 1];
+
+    for (int i = 0; i < len; i++)
+        if (arr[i] > max) max = arr[i];
+
+    int whole = max / (8 * sizeof(Base));
+    int rem = max % (8 * sizeof(Base));
+
+    if (rem > 0) whole++;
+
+    m_capacity = whole;
+    m_data = new Base[m_capacity];
+
+    for (int i = 0; i < len; i++){
+
+        whole = arr[i] / (8 * sizeof(Base));
+        rem = arr[i] % (8 * sizeof(Base));
+
+        unsigned int mask = 1 << rem;
+
+        m_data[whole] |= mask;
+    }
+
+    m_len = max;
+}
+
 polynom::polynom(const polynom &numberPolynom)
 {
     m_capacity = numberPolynom.m_capacity;
@@ -255,6 +283,8 @@ polynom &polynom::operator =(const polynom &inputPolynom)
 
 polynom polynom::operator <<(const int q) const
 {
+    if (m_len == 0 || q == 0) return (*this);
+
     int len = m_len + q;
     int whole = len / (sizeof(Base) * 8);
 
@@ -280,8 +310,6 @@ polynom polynom::operator <<(const int q) const
 
     for (int i = 0; i < fullBase; i++) tmp.m_data[i] = 0;
 
-    if (q == 0) return tmp;
-
     int r = q % (sizeof(Base) * 8);
     unsigned int mask = 1;
 
@@ -292,9 +320,15 @@ polynom polynom::operator <<(const int q) const
 
     tmp.checkLength();
 
-    unsigned int test;
+    unsigned int test = tmp.m_data[tmp.lenBase() - 1] & mask;
+    int i;
 
-    for (int i = tmp.lenBase(); i > 0; i--){
+    if (test == 0) i = tmp.lenBase() - 1;
+    else i = tmp.lenBase();
+
+    tmp.m_data[i] <<= r;
+
+    for (; i > 0; i--){
         test = tmp.m_data[i - 1] & mask;
         tmp.m_data[i] ^= (test >> shift);
         tmp.m_data[i - 1] <<= r;
@@ -357,7 +391,7 @@ polynom polynom::gcd(const polynom inputPolynom) const
 bool polynom::reducability() const
 {
     polynom u("10");
-    polynom uu("10");
+//    polynom uu("10");
 
     int l = (*this).power() / 2;
 

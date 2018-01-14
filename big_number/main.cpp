@@ -7,6 +7,7 @@
 #include <sstream>
 #include <ctime>
 #include <cstdlib>
+#include <vector>
 
 
 typedef unsigned int Base;
@@ -29,23 +30,9 @@ void discreteLogarithm ();
 
 int main(){
 
-    polynom a("10110100001101111000001010100010100");
-    polynom b("1111010011101111000110111110011001");
+    int arr[] = {0,1,4,6,7,8,82};
 
-    polynom c = a.gcd(b);
-
-    polynom d = a % b;
-
-
-
-
-//    polynom a("1000000000000000000000000100000000001");
-//    polynom a("1000000000000000000000000000000000010001");
-//    polynom a("100000000101");
-//    polynom a("1000000000000000000010000000000001");
-//    polynom a("10000000000000000000000001001");
-//    polynom a("1000000000000000000000000100000000001");
-//    polynom a("100000000000000000000000000000000000001001");
+    polynom a (arr, sizeof(arr)/sizeof(int));
 
     cout << "Reducability -> ";
     if (a.reducability() == true) cout << "true" << endl;

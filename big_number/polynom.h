@@ -23,9 +23,11 @@ private:
     int m_capacity; // quantity of bases
 
 public:
-    polynom();
+    polynom ();
 
-    polynom( std::string str );
+    polynom ( std::string str );
+
+    polynom (int arr[] , int len);
 
     polynom (const polynom & numberPolynom);
 
