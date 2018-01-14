@@ -280,6 +280,8 @@ polynom polynom::operator <<(const int q) const
 
     for (int i = 0; i < fullBase; i++) tmp.m_data[i] = 0;
 
+    if (q == 0) return tmp;
+
     int r = q % (sizeof(Base) * 8);
     unsigned int mask = 1;
 
@@ -323,7 +325,7 @@ bool polynom::operator !=(const int numberOne) const
 
 polynom polynom::gcd(const polynom inputPolynom) const
 {
-    polynom f, g, r, q;
+    polynom f, g, r;
 
     if (this->m_len >= inputPolynom.m_len){
         f = *this;
@@ -338,13 +340,9 @@ polynom polynom::gcd(const polynom inputPolynom) const
 
     r = f % g;
 
-    q = g;
-
     while (!(r.m_len == 0 && r.m_data[0] == 0)){
 
         res = g;
-
-        q = f / g;
 
         r = f % g;
 

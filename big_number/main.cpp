@@ -29,12 +29,12 @@ void discreteLogarithm ();
 
 int main(){
 
-    polynom a("100000000000000000000000000000000000001001");
-    polynom b("11111100001110000010000111100001101101000");
+    polynom a("10110100001101111000001010100010100");
+    polynom b("1111010011101111000110111110011001");
 
-    polynom c("11");
+    polynom c = a.gcd(b);
 
-//    polynom d = a.gcd(b);
+    polynom d = a % b;
 
 
 
