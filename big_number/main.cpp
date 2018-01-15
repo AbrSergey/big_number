@@ -30,9 +30,10 @@ void discreteLogarithm ();
 
 int main(){
 
-    int arr[] = {0,1,4,6,7,8,82};
+    int arr[] = {0, 1, 4, 6, 7, 8, 82};
 
     polynom a (arr, sizeof(arr)/sizeof(int));
+
 
     cout << "Reducability -> ";
     if (a.reducability() == true) cout << "true" << endl;

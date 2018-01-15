@@ -51,6 +51,8 @@ public:
 
     bool operator != (const int numberOne) const;
 
+    bool operator != (polynom input) const;
+
     polynom gcd (const polynom inputPolynom) const;
 
     bool reducability () const;

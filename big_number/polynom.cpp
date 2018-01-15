@@ -94,7 +94,7 @@ polynom::polynom(int arr[], int len)
         m_data[whole] |= mask;
     }
 
-    m_len = max;
+    m_len = max + 1;
 }
 
 polynom::polynom(const polynom &numberPolynom)
@@ -244,6 +244,8 @@ polynom polynom::operator /(const polynom &inputPolynom) const
 
 polynom polynom::operator %(const polynom &inputPolynom) const
 {   
+    if (inputPolynom == 0) return inputPolynom;
+
     polynom whole, remainder;
 
     if ((*this).m_len < inputPolynom.m_len) return (*this);
@@ -326,12 +328,15 @@ polynom polynom::operator <<(const int q) const
     if (test == 0) i = tmp.lenBase() - 1;
     else i = tmp.lenBase();
 
-    tmp.m_data[i] <<= r;
+    if (r != 0){
 
-    for (; i > 0; i--){
-        test = tmp.m_data[i - 1] & mask;
-        tmp.m_data[i] ^= (test >> shift);
-        tmp.m_data[i - 1] <<= r;
+       tmp.m_data[i] <<= r;
+
+        for (; i > 0; i--){
+            test = tmp.m_data[i - 1] & mask;
+            tmp.m_data[i] ^= (test >> shift);
+            tmp.m_data[i - 1] <<= r;
+        }
     }
 
     tmp.m_len = len;
@@ -355,6 +360,16 @@ bool polynom::operator !=(const int numberOne) const
     if ((*this).m_len == 1 && (*this).m_data[0] == 1) return false;
 
     return true;
+}
+
+bool polynom::operator !=(polynom input) const
+{
+    if (m_len != input.m_len) return true;
+
+    for (int i = 0; i < input.lenBase(); i++)
+        if (m_data[i] != input.m_data[i]) return true;
+
+    return false;
 }
 
 polynom polynom::gcd(const polynom inputPolynom) const
@@ -391,17 +406,12 @@ polynom polynom::gcd(const polynom inputPolynom) const
 bool polynom::reducability() const
 {
     polynom u("10");
-//    polynom uu("10");
 
     int l = (*this).power() / 2;
 
     for (int i = 0; i < l; i++){
 
         u = (u * u) % (*this);
-
-//        big_number rr("2");
-//        uu = uu.pow(rr, (*this));
-
 
         polynom tmp = u;
 
@@ -421,8 +431,6 @@ bool polynom::primitive() const
 {
     int power = (*this).power();
 
-//    assert (0 < power && power < 32);
-
     int whole = power / 32;
     int rem = power % 32;
 
@@ -440,11 +448,7 @@ bool polynom::primitive() const
 
         big_number tmp = x / factorization[i].prime_number;
 
-        polynom r("1");
-
-//        r = r << tmp.data(0);
-
-//        r = r % (*this);
+        polynom r("10");
 
         r = r.pow(tmp, (*this));
 
@@ -565,23 +569,39 @@ int polynom::power() const
 
 polynom polynom::pow(const big_number &y, const polynom &mod)
 {
+    if (y.len() == 1 && y.data(0) == 0){
+        polynom r("1");
+        return r;
+    }
+
     // declaration
     polynom z, q = *this;
 
     // step 1
 
     Base u = 1;
-    if ((u & 1) == 0) z.m_data[0] = 1;
-
+    if ((y.data(0) & u) == 0){
+        z.m_capacity = 1;
+        z.m_data = new Base[z.m_capacity];
+        z.m_data[0] = 1;
+        z.m_len = 1;
+    }
     else z = *this;
 
     // step 2
 
-    for (int i = 0; i < (*this).lenBase(); i++)
+    for (int i = 0; i < y.len(); i++)
+        for (unsigned int j = 1; j < 8*sizeof(Base); j++){
+
+            q = (q * q) % mod;
+            if (((y.data(i) >> j) & 1) == 1) z = (z * q) % mod;
+        }
+
+    for (int i = 1; i < y.len(); i++)
         for (unsigned int j = 0; j < 8*sizeof(Base); j++){
 
-            q = (q << 2) % mod;
-            if ((y.data(i) >> j) & 1 == 1) z = (z << 1) % mod;
+            q = (q * q) % mod;
+            if (((y.data(i) >> j) & 1) == 1) z = (z * q) % mod;
         }
     return (z % mod);
 }
